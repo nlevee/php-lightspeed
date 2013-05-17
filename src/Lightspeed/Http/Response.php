@@ -177,16 +177,15 @@ class Response {
 			$GLOBALS['http_response_code'] = $this->statusCode;
 			if (($message = self::getMessageStatus($this->statusCode)) !== NULL) {
 				if (strpos(PHP_SAPI, 'cgi') === 0) {
-					header('Status: ' . $message);
+					header('Status: ' . $message, false);
 				} else {
 					$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-					header($protocol . $message);
+					header($protocol . ' ' . $message, false);
 				}
 			}
 			// envoi des headers défini
-			/*print_r($this->headers);
 			foreach ($this->headers as $sHeaderKey=>$sHeaderValue)
-				header($sHeaderKey . ": " . $sHeaderValue, true);*/
+				header($sHeaderKey . ": " . $sHeaderValue, false);
 		} else
 			trigger_error('Header already sent!', E_USER_NOTICE);
 		echo $this->body;
