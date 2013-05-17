@@ -114,6 +114,21 @@ class Request {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getUri() {
+		return $_SERVER['SCRIPT_NAME'];
+	}
+
+	/**
+	 * Get Content-Length
+	 * @return int
+	 */
+	public function getContentLength() {
+		return $this->getHeaders('CONTENT_LENGTH') ?: 0;
+	}
+
+	/**
 	 * Get Referer
 	 * @return string|null
 	 */

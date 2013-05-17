@@ -15,4 +15,11 @@ require_once 'Lightspeed/Autoload.php';
 
 // demarrage de l'application
 $app = new \Lightspeed\App( new \Lightspeed\Http\Request() );
-$app->dispatch(new \Lightspeed\Http\Response());
+
+// ajout des route
+$app->get("/.*", function() {
+	echo 'content';
+});
+
+// ecoute
+$app->listen(new \Lightspeed\Http\Response());

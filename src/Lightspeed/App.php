@@ -23,6 +23,11 @@ class App {
 	 */
 	private $routes = array('ANY' => array());
 
+	/**
+	 * @var array
+	 */
+	private $filters = array();
+
 
 	/**
 	 * @var Request
@@ -204,7 +209,7 @@ class App {
 	 * lecture de la requete
 	 * @param Response $response
 	 */
-	public function dispatch(Response &$response) {
+	public function listen(Response &$response) {
 		// demarrage des middlewares
 		if (!empty($this->middlewares))
 			$this->middlewares[0]->call($response);
