@@ -1,0 +1,14 @@
+
+#
+SetEnv APP_BASEPATH /
+
+#
+RewriteEngine On
+RewriteBase /
+
+# Si dossier existe on le lit directement
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.* - [L,QSA]
+RewriteRule !\.(js|ico|gif|jpe?g|png|css)$ index.php [L,QSA]
