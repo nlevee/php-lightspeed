@@ -32,8 +32,8 @@ class App {
 	/**
 	 * @param Request $request
 	 */
-	public function __construct(Request &$request) {
-		$this->request = $request;
+	public function __construct(Request &$request = null) {
+		$this->request = $request ?: new Request();
 		$this->middlewares[0] = $this;
 	}
 
@@ -60,9 +60,9 @@ class App {
 	 * lecture de la requete
 	 * @param Response $response
 	 */
-	public function listen(Response &$response) {
+	public function listen(Response &$response = null) {
 		// demarrage des middlewares
-		$this->middlewares[0]->call($response);
+		$this->middlewares[0]->call($response ?: new Response());
 	}
 
 	/**

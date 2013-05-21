@@ -14,7 +14,7 @@ require_once 'Lightspeed/Autoload.php';
 \Lightspeed\Autoload::register();
 
 // demarrage de l'application
-$app = new \Lightspeed\App( new \Lightspeed\Http\Request() );
+$app = new \Lightspeed\App();
 
 // ajout des route
 $router = new \Lightspeed\Middleware\Router();
@@ -26,4 +26,4 @@ $router->get("/.*", function() {
 $app->prepend($router);
 
 // ecoute
-$app->listen(new \Lightspeed\Http\Response());
+$app->listen();
