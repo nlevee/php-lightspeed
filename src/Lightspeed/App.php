@@ -62,7 +62,8 @@ class App {
 	 */
 	public function listen(Response &$response = null) {
 		// demarrage des middlewares
-		$this->middlewares[0]->call($response ?: new Response());
+		$response = $response ?: new Response();
+		$this->middlewares[0]->call($response);
 	}
 
 	/**
