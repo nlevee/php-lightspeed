@@ -31,11 +31,14 @@ class Autoload {
 	public static function autoload($sClassName) {
 		// mise en forme du nom de classe
 		$sClassName = preg_replace('@_|/+@', DIRECTORY_SEPARATOR, strtr($sClassName, '\\', DIRECTORY_SEPARATOR));
-		$sClassName = str_replace(__NAMESPACE__ . DIRECTORY_SEPARATOR, '', $sClassName);
 		if (!empty($sClassName)) {
-			$sFileName = __DIR__ . DIRECTORY_SEPARATOR . $sClassName . '.php';
-			if (file_exists($sFileName))
-				require $sFileName;
+			$aIncludePaths = explode(PATH_SEPARATOR, get_include_path());
+			foreach($aIncludePaths as $sPath) {
+				$sFileName = $sPath . $sClassName . '.php';
+				if (file_exists($sFileName))
+					break;
+			}
+			require $sFileName;
 		}
 	}
 

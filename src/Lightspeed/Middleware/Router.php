@@ -151,7 +151,7 @@ class Router extends Middleware implements \Countable{
 				// appel du callback si c'est possible
 				if (is_callable($callback) === true) {
 					ob_start();
-					call_user_func_array($callback, array($this->request, $response));
+					call_user_func_array($callback, array(&$this->request, &$response));
 					$response->setBody(ob_get_clean());
 				}
 				$this->next->call($response);
