@@ -40,11 +40,17 @@ class Request {
 	 */
 	private $headers;
 
+	/**
+	 * @var string
+	 */
+	private $basepath;
+
 
 	/**
-	 *
+	 * @param null|string $basepath
 	 */
-	public function __construct() {
+	public function __construct($basepath = null) {
+		$this->basepath = $basepath ?: getenv('LIGHTSPEED_BASEPATH') ?: null;
 		$this->headers = new Headers($_SERVER);
 	}
 
@@ -127,7 +133,9 @@ class Request {
 	 * @return string
 	 */
 	public function getUri() {
-		return $_SERVER['SCRIPT_NAME'];
+		if (null !== $this->basepath)
+			return '/' . preg_replace('@^'.$this->basepath.'@', '', $_SERVER['REQUEST_URI']);
+		return $_SERVER['REQUEST_URI'];
 	}
 
 	/**

@@ -1,10 +1,10 @@
 
 #
-SetEnv APP_BASEPATH /
+SetEnv LIGHTSPEED_BASEPATH /~nlevee/07_GitHub/php-lightspeed/exemple/htdocs/
 
 #
 RewriteEngine On
-RewriteBase /
+RewriteBase /~nlevee/07_GitHub/php-lightspeed/exemple/htdocs/
 
 # Si dossier existe on le lit directement
 RewriteCond %{REQUEST_FILENAME} -l [OR]
