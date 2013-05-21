@@ -5,6 +5,7 @@
  */
 
 namespace Lightspeed;
+use Lightspeed\Http\Request;
 use Lightspeed\Http\Response;
 
 /**
@@ -23,6 +24,11 @@ abstract class Middleware {
 	 */
 	protected $next;
 
+	/**
+	 * @var Request
+	 */
+	protected $request;
+
 
 	/**
 	 * Assign l'application au middleware
@@ -30,13 +36,17 @@ abstract class Middleware {
 	 */
 	public function setApplication(App $app) {
 		$this->application = $app;
+		$this->request = $this->application->getRequestHandler();
 	}
 
 	/**
 	 * Assign le prochain middleware à executer
-	 * @param Middleware $middleware
+	 * @param Middleware|mixed $middleware
+	 * @throws InvalidArgumentException
 	 */
-	public function setNext(Middleware $middleware) {
+	public function setNext($middleware) {
+		if (!method_exists($middleware, 'call'))
+			throw new InvalidArgumentException("The middleware must have a method 'call'");
 		$this->next = $middleware;
 	}
 

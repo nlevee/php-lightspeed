@@ -165,7 +165,7 @@ class Response {
 	 * Envoi sur la sortie standard la réponse
 	 * Envoi les header s'il n'ont pas encore été envoyé sinon envoi une notice
 	 */
-	public function display() {
+	public function flush() {
 		if (!headers_sent()) {
 			// prise en charge du contenu vide
 			if (empty($this->body) && ob_get_length() == 0 && $this->statusCode == 200)

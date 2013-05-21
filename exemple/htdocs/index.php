@@ -17,9 +17,13 @@ require_once 'Lightspeed/Autoload.php';
 $app = new \Lightspeed\App( new \Lightspeed\Http\Request() );
 
 // ajout des route
-$app->get("/.*", function() {
+$router = new \Lightspeed\Middleware\Router();
+$router->get("/.*", function() {
 	echo 'content';
 });
+
+// ajout du middleware
+$app->prepend($router);
 
 // ecoute
 $app->listen(new \Lightspeed\Http\Response());
