@@ -23,7 +23,7 @@ $app->prepend($controller);
 
 // Routeur
 $router = new \Lightspeed\Middleware\Router();
-$router->get("/test", function($request) {
+$router->get("/.*", function($request) {
 	$request->setParam('action', 'test');
 });
 $app->prepend($router);
