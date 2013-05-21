@@ -72,17 +72,27 @@ class Request {
 	}
 
 	/**
-	 * Récuperation du param $name dans la request
-	 * @param string $name
+	 * Récuperation du param $name dans la request,
+	 * si $name est un tableau on récupere les param des valeur de $name
+	 * @param string|array $name
 	 * @param string|null $default
 	 * @return mixed
 	 */
 	public function getParam($name, $default = null) {
-		if (isset($this->params[$name]))
-			return $this->params[$name];
-		if (isset($_REQUEST[$name]))
-			return $_REQUEST[$name];
-		return $default;
+		if (is_array($name)) {
+			return array_merge(
+				// fabrication du tableau de valeurs par default
+				$default ?: array_combine($name, array_fill(0, count($name), null)),
+				// tableau des donnée retourné exp des valeur null
+				array_filter(array_combine($name, array_map(array($this, 'getParam'), $name)))
+			);
+		} else {
+			if (isset($this->params[$name]))
+				return $this->params[$name];
+			if (isset($_REQUEST[$name]))
+				return $_REQUEST[$name];
+			return $default;
+		}
 	}
 
 	/**
