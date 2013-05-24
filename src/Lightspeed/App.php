@@ -13,6 +13,11 @@ use Lightspeed\Http\Request;
 use Lightspeed\Http\Response;
 
 /**
+ * Appel de classe Exception
+ */
+require_once "Exception.php";
+
+/**
  * Class App
  * @package Lightspeed
  */

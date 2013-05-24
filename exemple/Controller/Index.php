@@ -17,14 +17,13 @@ use Lightspeed\Model\Handler\PDO;
  */
 class Index extends Controller{
 
-	public function test(Response $response) {
+	protected function testAction(Response $response) {
 		// Récuperation d'un Model
 		$oModel = new \ServerHttpConfigModel();
 		// Récuperation d'un Handler
-		$oHandler = new PDO(new \PDOHandler());
+		$oHandler = new PDO(\PDOHandler::getInstance());
 		// récuperation d'une collection
 		$oCollection = new Collection($oHandler->fetchSetInto($oModel));
-
 		// envoi de la réponse
 		$response->setContentType('application/json');
 		return json_encode($oCollection->getArrayCopy());

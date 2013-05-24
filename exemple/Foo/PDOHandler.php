@@ -13,13 +13,15 @@ class PDOHandler extends \PDO {
 
 	/**
 	 * @param string $sName
-	 * @return PDO
+	 * @return PDOHandler
 	 */
 	public static function getInstance($sName = 'default') {
-		if (!isset(self::$_instance[$sName]))
+		if (!isset(self::$_instance[$sName])) {
 			self::$_instance[$sName] = new self();
+		}
 		return self::$_instance[$sName];
 	}
+
 
 	/**
 	 *
@@ -32,4 +34,5 @@ class PDOHandler extends \PDO {
 		));
 		$this->setAttribute(self::ATTR_ERRMODE, self::ERRMODE_EXCEPTION);
 	}
+
 }
