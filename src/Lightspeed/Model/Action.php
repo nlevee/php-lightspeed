@@ -4,6 +4,7 @@
  * @version 160120131215
  */
 namespace Lightspeed\Model;
+
 use Lightspeed\Http\Request;
 use Lightspeed\UnexpectedValueException;
 
