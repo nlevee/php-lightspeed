@@ -113,7 +113,7 @@ class PDO extends Action {
 	 * @param int $offset
 	 * @return Action[]
 	 */
-	public function fetchAllInto(Action $oModelObject, $limit = -1, $offset = 0) {
+	public function fetchSetInto(Action $oModelObject, $limit = -1, $offset = 0) {
 		// si la limite est supperieur a 0 on la place
 		$sqllimit = $limit > 0 ? ' LIMIT ' . $offset . ', ' . $limit : '';
 		// requete

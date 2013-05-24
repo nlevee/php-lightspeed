@@ -48,7 +48,7 @@ abstract class Action {
 	 * @param int $limit
 	 * @return Action[]
 	 */
-	abstract public function fetchAllInto(Action $oModelObject, $limit = -1, $offset = 0);
+	abstract public function fetchSetInto(Action $oModelObject, $limit = -1, $offset = 0);
 
 
 	/**

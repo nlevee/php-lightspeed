@@ -7,6 +7,9 @@
 namespace Controller;
 
 use Lightspeed\Controller;
+use Lightspeed\Http\Response;
+use Lightspeed\Model\Collection;
+use Lightspeed\Model\Handler\PDO;
 
 /**
  * Class Index
@@ -14,8 +17,17 @@ use Lightspeed\Controller;
  */
 class Index extends Controller{
 
-	public function test() {
-		return 'content index/index';
+	public function test(Response $response) {
+		// Récuperation d'un Model
+		$oModel = new \ServerHttpConfigModel();
+		// Récuperation d'un Handler
+		$oHandler = new PDO(new \PDOHandler());
+		// récuperation d'une collection
+		$oCollection = new Collection($oHandler->fetchSetInto($oModel));
+
+		// envoi de la réponse
+		$response->setContentType('application/json');
+		return json_encode($oCollection->getArrayCopy());
 	}
 
 }

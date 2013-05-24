@@ -64,7 +64,7 @@ class Controller extends Middleware {
 		// creation de l'instance de controller
 		$sControllerName = $this->namespace . "Controller\\" . ucfirst($sControllerName);
 		// verification de l'extention
-		$oController = new $sControllerName($this);
+		$oController = new $sControllerName($this->application, $this->request);
 		// lancemenent de l'action
 		return call_user_func_array(array($oController, strtolower($sActionName)), $aParams);
 	}
@@ -83,7 +83,7 @@ class Controller extends Middleware {
 			self::$PARAM_ACTION => $this->default_action,
 			self::$PARAM_CONTROLLER => $this->default_controller
 		)));
-		$response->setBody($this->launch($controller, $action, array()));
+		$response->setBody($this->launch($controller, $action, array($response)));
 		$this->next->call($response);
 	}
 }

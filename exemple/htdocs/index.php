@@ -8,6 +8,7 @@ define("BASE_PATH", realpath(__DIR__ . '/../') );
 // include path
 set_include_path( get_include_path() .
 	PATH_SEPARATOR . BASE_PATH . "/" .
+	PATH_SEPARATOR . BASE_PATH . "/Foo/" .
 	PATH_SEPARATOR . BASE_PATH . "/../src/" );
 
 // demarrage du loader
