@@ -24,6 +24,9 @@ $app->prepend($controller);
 
 // Routeur
 $router = new \Lightspeed\Middleware\Router();
+$router->get("/article", function($request) {
+	$request->setParam('action', 'articles');
+});
 $router->get("/.*", function($request) {
 	$request->setParam('action', 'test');
 });

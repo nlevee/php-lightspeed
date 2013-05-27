@@ -15,7 +15,7 @@ use Lightspeed\Model\Handler\PDO;
  * Class Index
  * @package Controller
  */
-class Index extends Controller{
+class Index extends Controller {
 
 	protected function testAction(Response $response) {
 		// Récuperation d'un Model
@@ -28,5 +28,18 @@ class Index extends Controller{
 		$response->setContentType('application/json');
 		return json_encode($oCollection->getArrayCopy());
 	}
+
+	protected function articlesAction(Response $response) {
+		// Récuperation d'un Model
+		$oModel = new \ServerHttpConfigModel();
+		// Récuperation d'un Handler
+		$oHandler = new PDO(\PDOHandler::getInstance());
+		// récuperation d'une collection
+		$oCollection = new Collection($oHandler->fetchSetInto($oModel));
+		// envoi de la réponse
+		$response->setContentType('application/json');
+		return json_encode($oCollection->getArrayCopy());
+	}
+
 
 }
