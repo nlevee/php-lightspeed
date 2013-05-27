@@ -155,6 +155,7 @@ class Router extends Middleware implements \Countable{
 					$response->setBody(ob_get_clean());
 				}
 				$this->next->call($response);
+				break;
 			}
 			unset($oRoute);
 		}
