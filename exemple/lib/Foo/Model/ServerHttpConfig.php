@@ -4,10 +4,14 @@
  * @version 090120131813
  */
 
+namespace Foo\Model;
+
+use Lightspeed\Model\Action;
+
 /**
  * Class ServerHttpConfigModel
  */
-class ServerHttpConfigModel extends \Lightspeed\Model\Action {
+class ServerHttpConfig extends Action {
 
 	/**
 	 * @var string|array

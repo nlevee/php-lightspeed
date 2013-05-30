@@ -4,6 +4,12 @@
  * @version 240520131627
  */
 
+namespace Foo;
+
+/**
+ * Class PDOHandler
+ * @package Foo
+ */
 class PDOHandler extends \PDO {
 
 	/**
