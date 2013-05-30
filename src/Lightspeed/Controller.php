@@ -21,9 +21,14 @@ abstract class Controller {
 	protected $application;
 
 	/**
-	 * @var Http\Request
+	 * @var Request
 	 */
 	protected $request;
+
+	/**
+	 * @var null|Engine
+	 */
+	protected $engine;
 
 
 	/**
@@ -33,6 +38,11 @@ abstract class Controller {
 	final public function __construct(App $application, Request $request) {
 		$this->request = $request;
 		$this->application = $application;
+		$this->engine = $application->getShare('engine');
+		if (is_object($this->engine) && !is_a($this->engine, '\\Lightspeed\\Engine')){
+			trigger_error("share `engine` must implement \\Lightspeed\\Engine", E_USER_WARNING);
+			$this->engine = null;
+		}
 		$this->init();
 	}
 
@@ -60,7 +70,7 @@ abstract class Controller {
 	/**
 	 * Fonction d'appel des fonction interne
 	 * @param string $sMethodName
-	 * @param Http\Response $response
+	 * @param Response $response
 	 * @throws BadMethodCallException
 	 * @return mixed
 	 */

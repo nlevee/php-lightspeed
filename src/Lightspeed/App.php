@@ -33,6 +33,16 @@ class App {
 	 */
 	protected $middlewares = array();
 
+	/**
+	 * @var Share[]
+	 */
+	protected $shared_service = array();
+
+	/**
+	 * @var array[]
+	 */
+	protected $shared_service_opts = array();
+
 
 	/**
 	 * @param Request $request
@@ -45,10 +55,32 @@ class App {
 
 	/**
 	 * Renvoi l'instance request utilisé dans le dispatcher
-	 * @return \Lightspeed\Http\Request
+	 * @return Request
 	 */
 	public function getRequestHandler() {
 		return $this->request;
+	}
+
+	/**
+	 * Ajoute un service au referentiel de partage de l'application
+	 * Le service ne sera instancier qu'a l'appel de ce meme service via getShare(service_name)
+	 * @param string $service_name
+	 * @param Share $oShare
+	 * @param array $options
+	 */
+	public function shareAs($service_name, Share $oShare, array $options = array()) {
+		$this->shared_service[$service_name] = $oShare;
+		$this->shared_service_opts[$service_name] = $options;
+	}
+
+	/**
+	 * @param $service_name
+	 * @return null
+	 */
+	public function getShare($service_name) {
+		if(isset($this->shared_service[$service_name]))
+			return $this->shared_service[$service_name]->getInstance($this->shared_service_opts[$service_name]);
+		return null;
 	}
 
 	/**
@@ -78,5 +110,4 @@ class App {
 		// echo
 		$response->flush();
 	}
-
 }

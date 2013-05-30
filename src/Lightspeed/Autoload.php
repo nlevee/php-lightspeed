@@ -34,7 +34,7 @@ class Autoload {
 		if (!empty($sClassName)) {
 			$aIncludePaths = explode(PATH_SEPARATOR, get_include_path());
 			foreach($aIncludePaths as $sPath) {
-				$sFileName = $sPath . $sClassName . '.php';
+				$sFileName = $sPath . '/' . $sClassName . '.php';
 				if (file_exists($sFileName))
 					break;
 			}

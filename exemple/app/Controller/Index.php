@@ -39,8 +39,8 @@ class Index extends Controller {
 		// récuperation d'une collection
 		$oCollection = new Collection($oHandler->fetchSetInto($oModel));
 		// envoi de la réponse
-		$m = new \Mustache_Engine;
-		return $m->render('Hello, {{planet}}!', array('planet' => 'World'));
+		$response->setContentType("text/html", 'utf-8');
+		return $this->engine->render('articles', reset($oCollection->getArrayCopy()));
 	}
 
 
