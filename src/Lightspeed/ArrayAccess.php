@@ -10,7 +10,7 @@ namespace Lightspeed;
  * Class ArrayAccess
  * @package Lightspeed
  */
-class ArrayAccess implements \ArrayAccess {
+class ArrayAccess implements \ArrayAccess,\Countable {
 
 	/**
 	 * @var array
@@ -22,6 +22,13 @@ class ArrayAccess implements \ArrayAccess {
 	 */
 	public function __construct(array $database = array()) {
 		$this->params = $database;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function count() {
+		return count($this->params);
 	}
 
 	/**
