@@ -35,15 +35,16 @@ class Request {
 	 */
 	private $contentTypeCallback = array();
 
-	/**
-	 * @var Headers
-	 */
-	private $headers;
 
 	/**
 	 * @var string
 	 */
-	private $basepath;
+	protected $basepath;
+
+	/**
+	 * @var Headers
+	 */
+	protected $headers;
 
 
 	/**
