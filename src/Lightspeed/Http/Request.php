@@ -5,6 +5,7 @@
  */
 
 namespace Lightspeed\Http;
+use Lightspeed\ArrayAccess;
 
 /**
  * Class Request
@@ -24,12 +25,6 @@ class Request {
 	 */
 	public static $AJAX_HEADER_VALUE = 'XMLHttpRequest';
 
-
-	/**
-	 * @var array
-	 */
-	private $params = array();
-
 	/**
 	 * @var array
 	 */
@@ -46,6 +41,11 @@ class Request {
 	 */
 	protected $headers;
 
+	/**
+	 * @var ArrayAccess
+	 */
+	protected $params;
+
 
 	/**
 	 * @param null|string $basepath
@@ -53,6 +53,7 @@ class Request {
 	public function __construct($basepath = null) {
 		$this->basepath = $basepath ?: getenv('LIGHTSPEED_BASEPATH') ?: null;
 		$this->headers = new Headers($_SERVER);
+		$this->params = new ArrayAccess($_REQUEST);
 	}
 
 
@@ -72,34 +73,18 @@ class Request {
 	 * @param null|string $value
 	 */
 	public function setParam($name, $value = null) {
-		if (is_array($name))
-			$this->params = array_replace($this->params, $name);
-		else
-			$this->params[$name] = $value;
+		$this->params->setParam($name, $value);
 	}
 
 	/**
 	 * Récuperation du param $name dans la request,
 	 * si $name est un tableau on récupere les param des valeur de $name
 	 * @param string|array $name
+	 * @param null $default
 	 * @param string|null $default
-	 * @return mixed
 	 */
 	public function getParam($name, $default = null) {
-		if (is_array($name)) {
-			return array_merge(
-				// fabrication du tableau de valeurs par default
-				$default ?: array_combine($name, array_fill(0, count($name), null)),
-				// tableau des donnée retourné exp des valeur null
-				array_filter(array_combine($name, array_map(array($this, 'getParam'), $name)))
-			);
-		} else {
-			if (isset($this->params[$name]))
-				return $this->params[$name];
-			if (isset($_REQUEST[$name]))
-				return $_REQUEST[$name];
-			return $default;
-		}
+		return $this->getParam($name, $default);
 	}
 
 	/**
@@ -108,9 +93,7 @@ class Request {
 	 * @return array
 	 */
 	public function getParams(array $excludeKeys = array()) {
-		return array_filter(array_replace($_REQUEST, $this->params), function($value) use ($excludeKeys){
-			return !in_array($value, $excludeKeys);
-		});
+		return $this->getParams($excludeKeys);
 	}
 
 	/**
