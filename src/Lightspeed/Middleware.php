@@ -34,7 +34,7 @@ abstract class Middleware {
 	 * Assign l'application au middleware
 	 * @param App $app
 	 */
-	public function setApplication(App $app) {
+	public function setApplication(App &$app) {
 		$this->application = $app;
 		$this->request = $this->application->getRequestHandler();
 	}

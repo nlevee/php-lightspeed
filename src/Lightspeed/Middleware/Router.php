@@ -158,7 +158,7 @@ class Router extends Middleware implements \Countable{
 				break;
 			}
 			// aucun match dans les
-			if (!isset($params) || !$params) {
+			if (!isset($params) || false === $params) {
 				$response->notFound($this->getMatchMethods());
 				$this->stop($response);
 			}
