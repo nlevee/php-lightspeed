@@ -81,10 +81,10 @@ class Request {
 	 * si $name est un tableau on récupere les param des valeur de $name
 	 * @param string|array $name
 	 * @param null $default
-	 * @param string|null $default
+	 * @return array|null|string
 	 */
 	public function getParam($name, $default = null) {
-		return $this->getParam($name, $default);
+		return $this->params->getParam($name, $default);
 	}
 
 	/**
@@ -93,7 +93,7 @@ class Request {
 	 * @return array
 	 */
 	public function getParams(array $excludeKeys = array()) {
-		return $this->getParams($excludeKeys);
+		return $this->params->getParams($excludeKeys);
 	}
 
 	/**
