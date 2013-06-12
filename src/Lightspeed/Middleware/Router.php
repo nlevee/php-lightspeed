@@ -6,15 +6,27 @@
 
 namespace Lightspeed\Middleware;
 
+use Lightspeed\BadMethodCallException;
 use Lightspeed\Http\Response;
 use Lightspeed\Middleware;
 use Lightspeed\Route;
 
 /**
  * Class Router
+ * @method void post(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
+ * @method void get(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
+ * @method void delete(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
+ * @method void put(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
+ * @method void options(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
+ * @method void any(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
  * @package Lightspeed\Middleware
  */
 class Router extends Middleware implements \Countable{
+
+	/**
+	 * @var array
+	 */
+	private $methods = array('any', 'get', 'post', 'put', 'delete', 'options');
 
 	/**
 	 * @var array
@@ -28,36 +40,24 @@ class Router extends Middleware implements \Countable{
 
 
 	/**
-	 * Ajoute une route sur la methode post
-	 * @param string $route
-	 * @param mixed $callback
 	 * @param array $filters
-	 * @param array $query
 	 */
-	public function post($route, $callback, array $filters = array(), array $query = array()) {
-		$this->add('post', $route, $callback, $filters, $query);
+	public function __construct(array $filters = array()) {
+		$this->filters = $filters;
 	}
 
 	/**
-	 * Ajoute une route sur la methode get
-	 * @param string $route
-	 * @param mixed $callback
-	 * @param array $filters
-	 * @param array $query
+	 * @param string $method
+	 * @param array $params
+	 * @throws \Lightspeed\BadMethodCallException
+	 * @return mixed
 	 */
-	public function get($route, $callback, array $filters = array(), array $query = array()) {
-		$this->add('get', $route, $callback, $filters, $query);
-	}
-
-	/**
-	 * Ajoute une route sur toutes les methodes
-	 * @param string $route
-	 * @param mixed $callback
-	 * @param array $filters
-	 * @param array $query
-	 */
-	public function any($route, $callback, array $filters = array(), array $query = array()) {
-		$this->add('any', $route, $callback, $filters, $query);
+	public function __call($method, array $params) {
+		if (in_array($method, $this->methods)) {
+			array_unshift($params, $method);
+			return call_user_func_array(array($this, 'add'), $params);
+		} else
+			throw new BadMethodCallException("Method $method doses not exist");
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Router extends Middleware implements \Countable{
 	 * @param array $filters
 	 * @param array $query
 	 */
-	public function add($meth, $route, $callback, array $filters = array(), array $query = array()) {
+	public function add($meth, $route, $callback = null, array $filters = array(), array $query = array()) {
 		if (!is_array($meth))
 			$meth = array($meth);
 		foreach ($meth as $methName) {
