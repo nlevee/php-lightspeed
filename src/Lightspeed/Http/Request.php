@@ -5,7 +5,7 @@
  */
 
 namespace Lightspeed\Http;
-use Lightspeed\ArrayAccess;
+use Lightspeed\ParamsAccess;
 
 /**
  * Class Request
@@ -42,7 +42,7 @@ class Request {
 	protected $headers;
 
 	/**
-	 * @var ArrayAccess
+	 * @var ParamsAccess
 	 */
 	protected $params;
 
@@ -53,7 +53,7 @@ class Request {
 	public function __construct($basepath = null) {
 		$this->basepath = $basepath ?: getenv('LIGHTSPEED_BASEPATH') ?: null;
 		$this->headers = new Headers($_SERVER);
-		$this->params = new ArrayAccess($_REQUEST);
+		$this->params = new ParamsAccess($_REQUEST);
 	}
 
 

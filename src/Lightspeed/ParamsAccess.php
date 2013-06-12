@@ -10,7 +10,7 @@ namespace Lightspeed;
  * Class ArrayAccess
  * @package Lightspeed
  */
-class ArrayAccess implements \ArrayAccess,\Countable {
+class ParamsAccess implements \ArrayAccess,\Countable {
 
 	/**
 	 * @var array
@@ -98,7 +98,7 @@ class ArrayAccess implements \ArrayAccess,\Countable {
 	 * @param mixed $value
 	 */
 	public function offsetSet($offset, $value) {
-		$this->params[$offset] = $value;
+		$this->setParam($offset, $value);
 	}
 
 	/**
