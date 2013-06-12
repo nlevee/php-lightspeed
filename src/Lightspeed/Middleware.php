@@ -40,22 +40,6 @@ abstract class Middleware {
 	}
 
 	/**
-	 * Arrete la suite d'appel de middleware
-	 * @param Response $response
-	 */
-	public function stop(Response &$response) {
-		$this->application->call($response);
-	}
-
-	/**
-	 * Appel la fonction de middleware suivante
-	 * @param Response $response
-	 */
-	public function next(Response &$response) {
-		$this->next->call($response);
-	}
-
-	/**
 	 * Assign le prochain middleware à executer
 	 * @param Middleware|mixed $middleware
 	 * @throws InvalidArgumentException
@@ -64,6 +48,23 @@ abstract class Middleware {
 		if (!method_exists($middleware, 'call'))
 			throw new InvalidArgumentException("The middleware must have a method 'call'");
 		$this->next = $middleware;
+	}
+
+
+	/**
+	 * Arrete la suite d'appel de middleware
+	 * @param Response $response
+	 */
+	protected function stop(Response &$response) {
+		$this->application->call($response);
+	}
+
+	/**
+	 * Appel la fonction de middleware suivante
+	 * @param Response $response
+	 */
+	protected function next(Response &$response) {
+		$this->next->call($response);
 	}
 
 
