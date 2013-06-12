@@ -134,6 +134,20 @@ class Response {
 	}
 
 	/**
+	 * Renvoi dans la reponse un header 405 avec un Allow: $aMethodAllowed
+	 * ou 404 si vraiement introuvable
+	 * @param $aMethodAllowed
+	 */
+	public function notFound(array $aMethodAllowed = array()) {
+		if (!empty($aMethodAllowed)){
+			$this->setStatus(405);
+			$this->headers['Allow'] = implode(', ', $aMethodAllowed);
+		} else {
+			$this->setStatus(404);
+		}
+	}
+
+	/**
 	 * Met a jour le code de status de la réponse
 	 * @param int $statusCode
 	 */

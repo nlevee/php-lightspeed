@@ -154,10 +154,17 @@ class Router extends Middleware implements \Countable{
 					call_user_func_array($callback, array(&$this->request, &$response));
 					$response->setBody(ob_get_clean());
 				}
-				$this->next->call($response);
 				break;
 			}
+			// aucun match dans les
+			if (!isset($params) || !$params) {
+				$response->notFound($this->getMatchMethods());
+				$this->application->call($response);
+			}
 			unset($oRoute);
+		}else{
+			$response->notFound($this->getMatchMethods());
+			$this->application->call($response);
 		}
 	}
 
