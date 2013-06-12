@@ -159,12 +159,12 @@ class Router extends Middleware implements \Countable{
 			// aucun match dans les
 			if (!isset($params) || !$params) {
 				$response->notFound($this->getMatchMethods());
-				$this->application->call($response);
+				$this->stop($response);
 			}
 			unset($oRoute);
 		}else{
 			$response->notFound($this->getMatchMethods());
-			$this->application->call($response);
+			$this->stop($response);
 		}
 	}
 

@@ -20,14 +20,14 @@ abstract class Middleware {
 	protected $application;
 
 	/**
-	 * @var App
-	 */
-	protected $next;
-
-	/**
 	 * @var Request
 	 */
 	protected $request;
+
+	/**
+	 * @var App
+	 */
+	protected $next;
 
 
 	/**
@@ -37,6 +37,22 @@ abstract class Middleware {
 	public function setApplication(App $app) {
 		$this->application = $app;
 		$this->request = $this->application->getRequestHandler();
+	}
+
+	/**
+	 * Arrete la suite d'appel de middleware
+	 * @param Response $response
+	 */
+	public function stop(Response &$response) {
+		$this->application->call($response);
+	}
+
+	/**
+	 * Appel la fonction de middleware suivante
+	 * @param Response $response
+	 */
+	public function next(Response &$response) {
+		$this->next->call($response);
 	}
 
 	/**
