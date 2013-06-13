@@ -38,12 +38,19 @@ class Router extends Middleware implements \Countable{
 	 */
 	private $filters = array();
 
+	/**
+	 * @var callback
+	 */
+	private $callback;
+
 
 	/**
 	 * @param array $filters
+	 * @param null|callback $callback
 	 */
-	public function __construct(array $filters = array()) {
+	public function __construct(array $filters = array(), $callback = null) {
 		$this->filters = $filters;
+		$this->callback = $callback;
 	}
 
 	/**
@@ -149,6 +156,7 @@ class Router extends Middleware implements \Countable{
 				// insert des params dans le request
 				$this->request->setParam(array_merge($params, $query));
 				// appel du callback si c'est possible
+				$callback = $callback ?: $this->callback;
 				if (is_callable($callback) === true) {
 					ob_start();
 					call_user_func_array($callback, array(&$this->request, &$response));
