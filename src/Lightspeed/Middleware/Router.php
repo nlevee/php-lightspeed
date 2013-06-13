@@ -8,6 +8,7 @@ namespace Lightspeed\Middleware;
 
 use Lightspeed\BadMethodCallException;
 use Lightspeed\Http\Response;
+use Lightspeed\InvalidArgumentException;
 use Lightspeed\Middleware;
 use Lightspeed\Route;
 
@@ -39,14 +40,14 @@ class Router extends Middleware implements \Countable{
 	private $filters = array();
 
 	/**
-	 * @var callback
+	 * @var callable
 	 */
 	private $callback;
 
 
 	/**
-	 * @param array $filters
-	 * @param null|callback $callback
+	 * @param array $filters array('var_name' => 'regexp')
+	 * @param null|callable $callback
 	 */
 	public function __construct(array $filters = array(), $callback = null) {
 		$this->filters = $filters;
@@ -65,6 +66,25 @@ class Router extends Middleware implements \Countable{
 			return call_user_func_array(array($this, 'add'), $params);
 		} else
 			throw new BadMethodCallException("Method $method doses not exist");
+	}
+
+	/**
+	 * Défini un filtre par default array('var_name' => 'regexp')
+	 * @param array $filter
+	 */
+	public function setDefaultFilter(array $filter) {
+		$this->filters = $filter;
+	}
+
+	/**
+	 * Défini la fonction par default
+	 * @param callable $callback
+	 * @throws \Lightspeed\InvalidArgumentException
+	 */
+	public function setDefaultCallback($callback) {
+		if (!is_callable($callback))
+			throw new InvalidArgumentException("callback must be callable");
+		$this->callback = $callback;
 	}
 
 	/**
