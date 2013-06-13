@@ -27,11 +27,11 @@ class HMAC_SHA256 implements Signature {
 	}
 
 	/**
-	 * @param string $value
-	 * @return string
+	 * @param string $value_to_sign
+	 * @return mixed|string
 	 */
-	public function sign($value) {
-		return base64_encode(hash_hmac("sha256", $value, $this->secret_key));
+	public function sign($value_to_sign) {
+		return base64_encode(hash_hmac("sha256", $value_to_sign, $this->secret_key));
 	}
 
 }

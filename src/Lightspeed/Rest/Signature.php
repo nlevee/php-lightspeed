@@ -10,9 +10,9 @@ namespace Lightspeed\Rest;
 interface Signature {
 
 	/**
-	 * @param string $value
-	 * @return string
+	 * @param string $value_to_sign
+	 * @return mixed|string
 	 */
-	public function sign($value);
+	public function sign($value_to_sign);
 
 }
