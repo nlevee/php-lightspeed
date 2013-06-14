@@ -16,6 +16,12 @@ use Lightspeed\Http\Response;
 abstract class Controller {
 
 	/**
+	 * Nom du partage pour l'engine
+	 */
+	const SHARE_ENGINE = 'engine';
+
+
+	/**
 	 * @var App
 	 */
 	protected $application;
@@ -38,7 +44,7 @@ abstract class Controller {
 	final public function __construct(App $application, Request $request) {
 		$this->request = $request;
 		$this->application = $application;
-		$this->engine = $application->getShare('engine');
+		$this->engine = $application->getShare(self::SHARE_ENGINE);
 		if (is_object($this->engine) && !is_a($this->engine, '\\Lightspeed\\Engine')){
 			trigger_error("share `engine` must implement \\Lightspeed\\Engine", E_USER_WARNING);
 			$this->engine = null;
