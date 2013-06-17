@@ -222,7 +222,7 @@ class Response {
 		// formatage du body selon le request content
 		foreach ($this->formater as $object) {
 			if ($req->getAccept($object[0])) {
-				$sConvertBody = $object[1]->convert($this->body);
+				$sConvertBody = $object[1]->convert($this->body, $req);
 				break;
 			}
 		}

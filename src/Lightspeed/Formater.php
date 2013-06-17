@@ -6,14 +6,20 @@
 
 namespace Lightspeed;
 
+use Lightspeed\Http\Request;
 
+/**
+ * Class Formater
+ * @package Lightspeed
+ */
 interface Formater {
 
 	/**
 	 * Converti la valeur $content en string dans le format nommé
 	 * @param mixed $content
+	 * @param Http\Request $request
 	 * @return string
 	 */
-	public function convert($content);
+	public function convert($content, Request $request);
 
 }

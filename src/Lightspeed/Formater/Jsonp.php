@@ -6,6 +6,7 @@
 
 namespace Lightspeed\Formater;
 
+use Lightspeed\Http\Request;
 use Lightspeed\InvalidArgumentException;
 
 /**
@@ -15,30 +16,17 @@ use Lightspeed\InvalidArgumentException;
 class Jsonp extends Json {
 
 	/**
-	 * @var \Lightspeed\Http\Request
-	 */
-	protected $request;
-
-
-	/**
-	 * @param Request $request
-	 */
-	public function __construct(Request $request) {
-		$this->request = $request;
-	}
-
-
-	/**
 	 * Converti la valeur $content en string dans le format jsonp, on attend un paramètre dans la request pour le callback
 	 * @param mixed $content
+	 * @param \Lightspeed\Http\Request $request
 	 * @throws \Lightspeed\InvalidArgumentException
 	 * @return string
 	 */
-	public function convert($content) {
-		$callback = $this->request->getParam('callback');
+	public function convert($content, Request $request) {
+		$callback = $request->getParam('callback');
 		if (!$callback)
 			throw new InvalidArgumentException("parameter 'callback' must be define.");
-		return "$callback(" . parent::convert($content) . ");";
+		return "$callback(" . parent::convert($content, $request) . ");";
 	}
 
 }
