@@ -16,6 +16,20 @@ use Lightspeed\InvalidArgumentException;
 class Jsonp extends Json {
 
 	/**
+	 * @var string
+	 */
+	private $callback;
+
+
+	/**
+	 * @param string $dafaultCallback
+	 */
+	public function __construct($dafaultCallback = 'App.callback') {
+		$this->callback = $dafaultCallback;
+	}
+
+
+	/**
 	 * Renvoi le content-type a renvoyé au client dans le header, peut être null
 	 * @return string
 	 */
@@ -31,7 +45,7 @@ class Jsonp extends Json {
 	 * @return string
 	 */
 	public function convert($content, Request $request) {
-		$callback = $request->getParam('callback', "App.callback");
+		$callback = $request->getParam('callback', $this->callback);
 		if (!$callback)
 			throw new InvalidArgumentException("parameter 'callback' must be define.");
 		return "$callback(" . parent::convert($content, $request) . ");";
