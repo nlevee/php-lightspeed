@@ -16,6 +16,14 @@ use Lightspeed\Http\Request;
 class Json implements Formater {
 
 	/**
+	 * Renvoi le content-type a renvoyé au client dans le header, peut être null
+	 * @return string
+	 */
+	public function getContentType() {
+		return "application/json";
+	}
+
+	/**
 	 * Converti la valeur $content en string dans le format json
 	 * @param mixed $content
 	 * @param \Lightspeed\Http\Request $request

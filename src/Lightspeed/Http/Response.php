@@ -91,7 +91,7 @@ class Response {
 	/**
 	 * @var Formater[]
 	 */
-	protected $formater;
+	protected $formater = array();
 
 
 	/**
@@ -99,7 +99,7 @@ class Response {
 	 */
 	public function __construct() {
 		$this->headers = new Headers();
-		$this->formater = array();
+		$this->addFormater("text", new Formater\String());
 	}
 
 
@@ -155,11 +155,12 @@ class Response {
 	}
 
 	/**
+	 * On ajoute un formater au début de la pile
 	 * @param string $type
 	 * @param Formater $formater
 	 */
 	public function addFormater($type, Formater $formater) {
-		$this->formater[] = array($type, $formater);
+		array_unshift($this->formater, array($type, $formater));
 	}
 
 	/**
@@ -197,6 +198,14 @@ class Response {
 	 * @param Request $req
 	 */
 	public function flush(Request $req) {
+		// formatage du body selon le request content
+		foreach ($this->formater as $object) {
+			if ($req->getAccept($object[0])) {
+				$sConvertBody = $object[1]->convert($this->body, $req);
+				$this->setContentType($object[1]->getContentType());
+				break;
+			}
+		}
 		if (!headers_sent()) {
 			// prise en charge du contenu vide
 			if (empty($this->body) && ob_get_length() == 0 && $this->statusCode == 200)
@@ -219,20 +228,9 @@ class Response {
 				header($sHeaderKey . ": " . $sHeaderValue, false);
 		} else
 			trigger_error('Header already sent!', E_USER_NOTICE);
-		// formatage du body selon le request content
-		foreach ($this->formater as $object) {
-			if ($req->getAccept($object[0])) {
-				$sConvertBody = $object[1]->convert($this->body, $req);
-				break;
-			}
-		}
-		if (!isset($sConvertBody))
-			$sConvertBody = implode("\n", array_filter(array_map(function($content){
-				if (is_string($content) || (is_object($content) && method_exists($content, '__toString')))
-					return (string) $content;
-				trigger_error("Impossible de transformé le contenu en chaine.", E_USER_WARNING);
-			}, $this->body)));
-		echo $sConvertBody;
+		if (isset($sConvertBody))
+			echo $sConvertBody;
+		else trigger_error("Any filter for format response", E_USER_WARNING);
 	}
 
 	/**

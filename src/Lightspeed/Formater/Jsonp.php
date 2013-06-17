@@ -16,6 +16,14 @@ use Lightspeed\InvalidArgumentException;
 class Jsonp extends Json {
 
 	/**
+	 * Renvoi le content-type a renvoyé au client dans le header, peut être null
+	 * @return string
+	 */
+	public function getContentType() {
+		return "application/javascript";
+	}
+
+	/**
 	 * Converti la valeur $content en string dans le format jsonp, on attend un paramètre dans la request pour le callback
 	 * @param mixed $content
 	 * @param \Lightspeed\Http\Request $request

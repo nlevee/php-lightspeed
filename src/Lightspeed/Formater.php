@@ -15,6 +15,12 @@ use Lightspeed\Http\Request;
 interface Formater {
 
 	/**
+	 * Renvoi le content-type a renvoyé au client dans le header, peut être null
+	 * @return string
+	 */
+	public function getContentType();
+
+	/**
 	 * Converti la valeur $content en string dans le format nommé
 	 * @param mixed $content
 	 * @param Http\Request $request

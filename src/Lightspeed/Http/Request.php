@@ -110,16 +110,17 @@ class Request {
 	 * @return bool
 	 */
 	public function getAccept($sType) {
-		return 1 === preg_match('@(' . $sType . ',)|\*/\*@', $this->getHeaders('accept'));
+		return 1 === preg_match('@(' . $sType . ',?)|\*/\*@', $this->getHeaders('accept'));
 	}
 
 	/**
 	 * @return string
 	 */
 	public function getUri() {
+		list($path, ) = explode('?', $_SERVER['REQUEST_URI']);
 		if (null !== $this->basepath)
-			return '/' . preg_replace('@^'.$this->basepath.'@', '', $_SERVER['REQUEST_URI']);
-		return $_SERVER['REQUEST_URI'];
+			return '/' . preg_replace('@^'.$this->basepath.'@', '', $path);
+		return $path;
 	}
 
 	/**
