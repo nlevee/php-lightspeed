@@ -155,6 +155,14 @@ class Response {
 	}
 
 	/**
+	 * @param string $type
+	 * @param Formater $formater
+	 */
+	public function addFormater($type, Formater $formater) {
+		$this->formater[] = array($type, $formater);
+	}
+
+	/**
 	 * Met a jour le code de status de la réponse
 	 * @param int $statusCode
 	 */
@@ -176,10 +184,11 @@ class Response {
 	 * @param bool $replace
 	 */
 	public function setBody($content, $replace = false) {
+		$content = is_array($content) ? $content : array($content);
 		if ($replace === false)
-			$this->body[] = $content;
+			$this->body = array_merge($this->body, $content);
 		else
-			$this->body = array($content);
+			$this->body = $content;
 	}
 
 	/**
@@ -211,9 +220,9 @@ class Response {
 		} else
 			trigger_error('Header already sent!', E_USER_NOTICE);
 		// formatage du body selon le request content
-		foreach ($this->formater as $type => $object) {
-			if ($req->getAccept($type)) {
-				$sConvertBody = $object->convert($this->body);
+		foreach ($this->formater as $object) {
+			if ($req->getAccept($object[0])) {
+				$sConvertBody = $object[1]->convert($this->body);
 				break;
 			}
 		}

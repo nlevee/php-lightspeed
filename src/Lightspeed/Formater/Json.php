@@ -21,7 +21,7 @@ class Json implements Formater {
 	 * @return string
 	 */
 	public function convert($content) {
-		if (!is_string($content)) {
+		if (is_string($content)) {
 			$content = array('message' => $content);
 		}
 		return json_encode($content);
