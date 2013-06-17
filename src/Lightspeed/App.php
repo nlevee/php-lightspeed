@@ -108,6 +108,6 @@ class App {
 	 */
 	public function call(Response &$response) {
 		// echo
-		$response->flush();
+		$response->flush($this->request);
 	}
 }
