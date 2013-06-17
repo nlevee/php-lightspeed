@@ -31,7 +31,7 @@ class Jsonp extends Json {
 	 * @return string
 	 */
 	public function convert($content, Request $request) {
-		$callback = $request->getParam('callback');
+		$callback = $request->getParam('callback', "App.callback");
 		if (!$callback)
 			throw new InvalidArgumentException("parameter 'callback' must be define.");
 		return "$callback(" . parent::convert($content, $request) . ");";
