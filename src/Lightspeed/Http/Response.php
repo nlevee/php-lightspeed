@@ -5,6 +5,7 @@
  */
 
 namespace Lightspeed\Http;
+use Lightspeed\Formater;
 
 /**
  * Class Response
@@ -73,9 +74,9 @@ class Response {
 	protected $ttl = null;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
-	protected $body = '';
+	protected $body = array();
 
 	/**
 	 * @var int
@@ -87,12 +88,18 @@ class Response {
 	 */
 	protected $headers;
 
+	/**
+	 * @var Formater[]
+	 */
+	protected $formater;
+
 
 	/**
 	 *
 	 */
 	public function __construct() {
 		$this->headers = new Headers();
+		$this->formater = array();
 	}
 
 
@@ -170,16 +177,17 @@ class Response {
 	 */
 	public function setBody($content, $replace = false) {
 		if ($replace === false)
-			$this->body .= (string)$content;
+			$this->body[] = $content;
 		else
-			$this->body = (string)$content;
+			$this->body = array($content);
 	}
 
 	/**
 	 * Envoi sur la sortie standard la réponse
 	 * Envoi les header s'il n'ont pas encore été envoyé sinon envoi une notice
+	 * @param Request $req
 	 */
-	public function flush() {
+	public function flush(Request $req) {
 		if (!headers_sent()) {
 			// prise en charge du contenu vide
 			if (empty($this->body) && ob_get_length() == 0 && $this->statusCode == 200)
@@ -202,7 +210,20 @@ class Response {
 				header($sHeaderKey . ": " . $sHeaderValue, false);
 		} else
 			trigger_error('Header already sent!', E_USER_NOTICE);
-		echo $this->body;
+		// formatage du body selon le request content
+		foreach ($this->formater as $type => $object) {
+			if ($req->getAccept($type)) {
+				$sConvertBody = $object->convert($this->body);
+				break;
+			}
+		}
+		if (!isset($sConvertBody))
+			$sConvertBody = array_filter(array_map(function($content){
+				if (is_string($content) || (is_object($content) && method_exists($content, '__toString')))
+					return (string) $content;
+				trigger_error("Impossible de transformé le contenu en chaine.", E_USER_WARNING);
+			}, $this->body));
+		echo $sConvertBody;
 	}
 
 	/**
