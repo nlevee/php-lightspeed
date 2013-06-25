@@ -208,11 +208,11 @@ class Response {
 		}
 		if (!headers_sent()) {
 			// prise en charge du contenu vide
-			if (empty($this->body) && ob_get_length() == 0 && $this->statusCode == 200)
+			if (empty($sConvertBody) && ob_get_length() == 0 && $this->statusCode == 200)
 				$this->statusCode = 204;
 			// prise en charge des redirections, on vide le body car inutil
 			if ($this->statusCode >= 301 && $this->statusCode <= 304)
-				$this->body = '';
+				$sConvertBody = '';
 			// gestion du code d'erreur
 			$GLOBALS['http_response_code'] = $this->statusCode;
 			if (($message = self::getMessageStatus($this->statusCode)) !== NULL) {
