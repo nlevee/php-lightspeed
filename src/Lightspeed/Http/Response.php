@@ -185,11 +185,13 @@ class Response {
 	 * @param bool $replace
 	 */
 	public function setBody($content, $replace = false) {
-		$content = is_array($content) ? $content : array($content);
-		if ($replace === false)
-			$this->body = array_merge($this->body, $content);
-		else
-			$this->body = $content;
+		if (!empty($content)) {
+			$content = is_array($content) ? $content : array($content);
+			if ($replace === false)
+				$this->body = array_merge($this->body, $content);
+			else
+				$this->body = $content;
+		}
 	}
 
 	/**

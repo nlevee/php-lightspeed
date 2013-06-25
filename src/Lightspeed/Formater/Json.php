@@ -33,7 +33,7 @@ class Json implements Formater {
 		if (is_string($content)) {
 			$content = array('message' => $content);
 		}
-		return !empty($content) ? json_encode($content) : null;
+		return !empty($content) ? json_encode($content) : '';
 	}
 
 }
