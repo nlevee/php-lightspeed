@@ -20,12 +20,19 @@ class Jsonp extends Json {
 	 */
 	private $callback;
 
+	/**
+	 * @var string
+	 */
+	private $param;
+
 
 	/**
 	 * @param string $dafaultCallback
+	 * @param string $defaultParam
 	 */
-	public function __construct($dafaultCallback = 'App.callback') {
+	public function __construct($dafaultCallback = 'callback', $defaultParam = 'callback') {
 		$this->callback = $dafaultCallback;
+		$this->param = $defaultParam;
 	}
 
 
@@ -45,7 +52,7 @@ class Jsonp extends Json {
 	 * @return string
 	 */
 	public function convert($content, Request $request) {
-		$callback = $request->getParam('callback', $this->callback);
+		$callback = $request->getParam($this->param, $this->callback);
 		if (!$callback)
 			throw new InvalidArgumentException("parameter 'callback' must be define.");
 		return "$callback(" . parent::convert($content, $request) . ");";
