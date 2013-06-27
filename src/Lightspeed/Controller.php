@@ -61,7 +61,11 @@ abstract class Controller {
 	 */
 	final public function __call($method, array $params) {
 		// execution
-		return $this->_handleFunction($method, $params[0]);
+		try {
+			return $this->_handleFunction($method, $params[0]);
+		} catch(\Exception $e) {
+			return $this->_handleException($e, $params[0]);
+		}
 	}
 
 
@@ -86,6 +90,17 @@ abstract class Controller {
 			throw new BadMethodCallException('The request method "' . $sMethodName . '" does not exist in Controller\\' . __CLASS__);
 		// execution de la method
 		return $this->$sMethodName($response);
+	}
+
+	/**
+	 * Fonction appelé pour la prise en charge des erreur des actions
+	 * @param \Exception $e
+	 * @param Response $response
+	 * @return string
+	 */
+	protected function _handleException(\Exception $e, Response $response) {
+		$response->setStatus(500);
+		return (string) $e;
 	}
 
 }
