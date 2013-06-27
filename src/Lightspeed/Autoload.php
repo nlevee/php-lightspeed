@@ -32,6 +32,12 @@ class Autoload {
 		// mise en forme du nom de classe
 		$sClassName = preg_replace('@_|/+@', DIRECTORY_SEPARATOR, strtr($sClassName, '\\', DIRECTORY_SEPARATOR));
 		if (!empty($sClassName)) {
+			if (preg_match("@Exception$@", $sClassName)) {
+				$aPartClass = explode("/", $sClassName);
+				array_pop($aPartClass);
+				array_push($aPartClass, "Exception");
+				$sClassName = implode("/",  $aPartClass);
+			}
 			$aIncludePaths = explode(PATH_SEPARATOR, get_include_path());
 			foreach($aIncludePaths as $sPath) {
 				$sFileName = $sPath . '/' . $sClassName . '.php';

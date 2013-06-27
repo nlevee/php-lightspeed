@@ -17,6 +17,15 @@ interface Exception {}
  * Class DomainException
  * @package Lightspeed
  */
+class RuntimeException
+	extends \RuntimeException
+	implements Exception
+{}
+
+/**
+ * Class DomainException
+ * @package Lightspeed
+ */
 class DomainException
 	extends \DomainException
 	implements Exception

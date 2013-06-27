@@ -30,9 +30,8 @@ class Json implements Formater {
 	 * @return string
 	 */
 	public function convert($content, Request $request) {
-		if (is_string($content)) {
-			$content = array('message' => $content);
-		}
+		if (is_array($content) && count($content) == 1)
+			$content = reset($content);
 		return !empty($content) ? json_encode($content) : '';
 	}
 
