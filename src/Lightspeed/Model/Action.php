@@ -162,11 +162,13 @@ abstract class Action implements \ArrayAccess {
 	}
 
 	/**
-	 * Renvoi une copie de l'objet sous forme de tableau
+	 * Renvoi une copie de l'objet sous forme de tableau,
+	 * si $bOnlyChange est a true on ne récupere que les donnée modifier
+	 * @param bool $bOnlyChange
 	 * @return array
 	 */
-	public function getArrayCopy() {
-		$aProperties = $this->getAccessProperties();
+	public function getArrayCopy($bOnlyChange = false) {
+		$aProperties = $bOnlyChange ? $this->getChangedProperties() : $this->getAccessProperties();
 		$aValues = array();
 		foreach($aProperties as $sProperty) {
 			$aValues[$sProperty] = $this->__get($sProperty);
@@ -240,7 +242,7 @@ abstract class Action implements \ArrayAccess {
 					if (preg_match('#^'.$sFieldName.'$#i', $sPostName)){
 						if (isset($aBind[$sPostName]))
 							$sPostName = $aBind[$sPostName];
-						$aData[$sPostName] = array($sPostValue ?: null);
+						$aData[$sPostName] = $sPostValue ?: null;
 					}
 				}
 				if ($sCountField == count($aData))
