@@ -23,7 +23,7 @@ class Collection extends \ArrayIterator {
 			return !is_object($item) || !is_subclass_of($item, '\\Lightspeed\\Model\\Action');
 		})) > 0;
 		if (count($aListOfModel) > 0 && $bHasWrongType === true)
-			throw new InvalidArgumentException("Array must be an array of \\Lightspeed\\Model\\Action");
+			throw new InvalidArgumentException("\$aListOfModel must be an array of \\Lightspeed\\Model\\Action");
 		unset($bHasWrongType);
 		parent::__construct($aListOfModel, $iFlags);
 	}

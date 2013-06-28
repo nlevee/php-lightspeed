@@ -12,7 +12,7 @@ use Lightspeed\UnexpectedValueException;
  * Class Action
  * @package Lightspeed\Model
  */
-abstract class Action {
+abstract class Action implements \ArrayAccess {
 
 	/**
 	 * @var bool
@@ -64,14 +64,21 @@ abstract class Action {
 	}
 
 	/**
+	 * Fonction appeler pour le call, permet la remise a zero de l'id
+	 */
+	public function __clone() {
+		foreach($this->getIdAttribute(true) as $sFieldName)
+			unset($this[$sFieldName]);
+	}
+
+	/**
 	 * met a jour une property du model de donnée
 	 * @param string $name
 	 * @param mixed $value
 	 */
 	public function __set($name, $value) {
 		// uniquement les properties non privée
-		$aProperties = $this->getAccessProperties();
-		if (!in_array($name, $aProperties)) {
+		if (!isset($this[$name])) {
 			trigger_error("Property $name is not editable in " . __CLASS__, E_USER_NOTICE);
 		} else {
 			// stockage de l'action réalisé
@@ -80,7 +87,6 @@ abstract class Action {
 			// assign la nouvelle valeur
 			$this->{$name} = $value;
 		}
-		unset($aProperties);
 	}
 
 	/**
@@ -89,14 +95,53 @@ abstract class Action {
 	 * @return mixed|null
 	 */
 	public function __get($name) {
-		$aProperties = $this->getAccessProperties();
-		if (!in_array($name, $aProperties)) {
+		if (!isset($this[$name])) {
 			trigger_error("Property $name is not readable in " . __CLASS__, E_USER_NOTICE);
 			return null;
 		}
-		unset($aProperties);
 		// retour de la valeur
 		return $this->{$name};
+	}
+
+	/**
+	 * Whether a offset exists
+	 * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+	 * @param mixed $offset
+	 * @return boolean true on success or false on failure.
+	 */
+	public function offsetExists($offset) {
+		return in_array($offset, $this->getAccessProperties());
+	}
+
+	/**
+	 * Offset to retrieve
+	 * @link http://php.net/manual/en/arrayaccess.offsetget.php
+	 * @param mixed $offset
+	 * @return mixed Can return all value types.
+	 */
+	public function offsetGet($offset) {
+		return $this->__get($offset);
+	}
+
+	/**
+	 * Offset to set
+	 * @link http://php.net/manual/en/arrayaccess.offsetset.php
+	 * @param mixed $offset
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function offsetSet($offset, $value) {
+		$this->__set($offset, $value);
+	}
+
+	/**
+	 * Offset to unset
+	 * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+	 * @param mixed $offset
+	 * @return void
+	 */
+	public function offsetUnset($offset) {
+		$this->__set($offset, null);
 	}
 
 	/**
@@ -171,17 +216,20 @@ abstract class Action {
 	}
 
 	/**
-	 * Charge les données depuis un tableau, on ne prend que les donnée correspodante a $aArrayData
-	 * les valeur de $aArrayData sont des regex pour la selection des champs
+	 * Charge les données depuis un tableau, on ne prend que les donnée correspodante au valeur de $aArrayData
+	 * 	les valeur de $aArrayData sont des regex pour la selection des champs
 	 * Si la clé de $aArrayData est une chaine on prend sa valeur a la place de la valeur du champs
 	 * Le tableau $aBind fait correspondre la clé de request au champs dans la base si
 	 * non rempli on utilise la clé dans $aArrayData
+	 * Si $aPostField est vide on suppose que c'est les données sont dans $aArrayData
 	 * @param array $aArrayData
 	 * @param array $aPostField
 	 * @param array $aBind
 	 */
-	public function loadFromArray(array $aArrayData, array $aPostField, array $aBind = array()){
+	public function loadFromArray(array $aArrayData, array $aPostField = array(), array $aBind = array()){
 		$aData = array();
+		if (empty($aPostField))
+			$aData = $aArrayData;
 		// récuperation des données depuis le post
 		foreach($aPostField as $sFieldKey=>$sFieldName){
 			if (!is_numeric($sFieldKey)){
@@ -201,13 +249,12 @@ abstract class Action {
 		}
 		unset($aPostField);
 		// insertion dans les champs des valeurs
-		$aProperties = $this->getAccessProperties();
 		foreach($aData as $sFieldName => $sFieldValue){
-			if ($sFieldValue !== null && in_array($sFieldName, $aProperties) !== false){
-				call_user_func_array(array($this, '__set'), is_array($sFieldValue) ? $sFieldValue : array($sFieldValue) );
+			if ($sFieldValue !== null && isset($this[$sFieldName])){
+				call_user_func_array(array($this, '__set'), array($sFieldName, $sFieldValue) );
 			}
 		}
-		unset($aData, $aProperties);
+		unset($aData);
 	}
 
 }

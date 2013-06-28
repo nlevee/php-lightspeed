@@ -191,4 +191,15 @@ class PDO extends Action {
 			return $this->_stmtLoadInto->rowCount() !== 0;
 		return false;
 	}
+
+	/**
+	 * Renvoi le nombre de ligne d'une collection de row
+	 * @param Action $oModelObject
+	 * @return int
+	 */
+	public function getRowCount(Action $oModelObject) {
+		// requete
+		$stmt = $this->_pdo->query("SELECT * FROM ".$this->_getSqlTableName($oModelObject));
+		return $stmt->rowCount();
+	}
 }

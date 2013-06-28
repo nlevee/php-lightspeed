@@ -52,6 +52,12 @@ abstract class Action {
 	 */
 	abstract public function fetchSetInto(Model\Action $oModelObject, $limit = -1, $offset = 0);
 
+	/**
+	 * Renvoi le nombre de ligne d'une collection de row
+	 * @param Model\Action $oModelObject
+	 * @return int
+	 */
+	abstract public function getRowCount(Model\Action $oModelObject);
 
 	/**
 	 * Mise a jour des données d'un model dans le systeme de gestion
