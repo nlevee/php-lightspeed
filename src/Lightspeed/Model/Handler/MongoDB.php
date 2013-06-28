@@ -8,6 +8,10 @@ namespace Lightspeed\Model\Handler;
 
 use Lightspeed\Model\Action;
 
+/**
+ * Class MongoDB
+ * @package Lightspeed\Model\Handler
+ */
 class MongoDB extends Action {
 
 	/**
