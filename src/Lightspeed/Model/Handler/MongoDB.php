@@ -7,12 +7,13 @@
 namespace Lightspeed\Model\Handler;
 
 use Lightspeed\Model\Action;
+use Lightspeed\Model\Handler;
 
 /**
  * Class MongoDB
  * @package Lightspeed\Model\Handler
  */
-class MongoDB extends Action {
+class MongoDB extends Handler\Action {
 
 	/**
 	 * @var \MongoClient
