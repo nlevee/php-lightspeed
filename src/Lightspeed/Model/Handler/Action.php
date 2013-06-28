@@ -41,7 +41,7 @@ abstract class Action {
 	 * @param Model\Action $oModelObject
 	 * @return bool
 	 */
-	abstract public function exist(Model\Action &$oModelObject);
+	abstract public function exist(Model\Action $oModelObject);
 
 	/**
 	 * On recupere une liste simple d'une partie ou de la totalité des element du systeme

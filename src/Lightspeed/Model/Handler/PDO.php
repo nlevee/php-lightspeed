@@ -183,7 +183,7 @@ class PDO extends Action {
 	 * @param Action $oModelObject
 	 * @return bool
 	 */
-	public function exist(Action &$oModelObject) {
+	public function exist(Action $oModelObject) {
 		// fabrication de la requete
 		$aDataExecute = $this->_makeSqlLoadInto($oModelObject);
 		// verification des données présente en base
