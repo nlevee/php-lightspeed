@@ -46,6 +46,11 @@ class Request {
 	 */
 	protected $params;
 
+	/**
+	 * @var string
+	 */
+	protected $input;
+
 
 	/**
 	 * @param null|string $basepath
@@ -53,7 +58,18 @@ class Request {
 	public function __construct($basepath = null) {
 		$this->basepath = $basepath ?: getenv('LIGHTSPEED_BASEPATH') ?: null;
 		$this->headers = new Headers($_SERVER);
-		$this->params = new ParamsAccess($_REQUEST);
+		//Input stream (readable one time only; not available for mutipart/form-data requests)
+		$aInputData = array();
+		if (($rawInput = @file_get_contents('php://input'))) {
+			if ($this->getContentType("json")) {
+				$aInputData = @json_decode($rawInput);
+			} else {
+				parse_str($rawInput, $aInputData);
+			}
+		}
+		// lecture des params
+		$this->input = $rawInput;
+		$this->params = new ParamsAccess(array_merge($_REQUEST, $aInputData));
 	}
 
 
@@ -64,6 +80,14 @@ class Request {
 	 */
 	public function isXMLHttpRequest() {
 		return strtolower(self::$AJAX_HEADER_VALUE) == strtolower($this->getHeaders(self::$AJAX_HEADER_NAME));
+	}
+
+	/**
+	 * Renvoi la valeur string de l'input php php://input
+	 * @return string
+	 */
+	public function getRowInput() {
+		return $this->input;
 	}
 
 	/**
