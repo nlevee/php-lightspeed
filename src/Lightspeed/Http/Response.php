@@ -141,7 +141,7 @@ class Response {
 	}
 
 	/**
-	 * Défini le header pour le created
+	 * Défini le header pour le created (Status 201 + Location: $uri)
 	 * @param string $uri
 	 */
 	public function created($uri) {
