@@ -136,7 +136,16 @@ class Response {
 	 * @param bool $permanent
 	 */
 	public function redirect($uri, $permanent = false) {
-		$this->status($permanent === true ? 301 : 302);
+		$this->setStatus($permanent === true ? 301 : 302);
+		$this->headers["Location"] = $uri;
+	}
+
+	/**
+	 * Défini le header pour le created
+	 * @param string $uri
+	 */
+	public function created($uri) {
+		$this->setStatus(201);
 		$this->headers["Location"] = $uri;
 	}
 
