@@ -14,12 +14,12 @@ use Lightspeed\Route;
 
 /**
  * Class Router
- * @method void post(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
- * @method void get(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
- * @method void delete(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
- * @method void put(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
- * @method void options(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
- * @method void any(\string $route, mixed $callback = null, array $filters = array(), array $query = array())
+ * @method void post(\string $route, Middleware $callback = null, array $filters = array(), array $query = array())
+ * @method void get(\string $route, Middleware $callback = null, array $filters = array(), array $query = array())
+ * @method void delete(\string $route, Middleware $callback = null, array $filters = array(), array $query = array())
+ * @method void put(\string $route, Middleware $callback = null, array $filters = array(), array $query = array())
+ * @method void options(\string $route, Middleware $callback = null, array $filters = array(), array $query = array())
+ * @method void any(\string $route, Middleware $callback = null, array $filters = array(), array $query = array())
  * @package Lightspeed\Middleware
  */
 class Router extends Middleware implements \Countable{
@@ -40,16 +40,16 @@ class Router extends Middleware implements \Countable{
 	private $filters = array();
 
 	/**
-	 * @var callable
+	 * @var Middleware
 	 */
 	private $callback;
 
 
 	/**
 	 * @param array $filters array('var_name' => 'regexp')
-	 * @param null|callable $callback
+	 * @param null|Middleware $callback
 	 */
-	public function __construct(array $filters = array(), $callback = null) {
+	public function __construct(array $filters = array(), Middleware $callback = null) {
 		$this->filters = $filters;
 		$this->callback = $callback;
 	}
@@ -91,11 +91,11 @@ class Router extends Middleware implements \Countable{
 	 * Ajoute une route sur la ou les methode $meth
 	 * @param string|array $meth peut être GET, POST, ... ou 'ANY' pour n'importe laquel
 	 * @param string $route
-	 * @param mixed $callback
+	 * @param Middleware $callback
 	 * @param array $filters
 	 * @param array $query
 	 */
-	public function add($meth, $route, $callback = null, array $filters = array(), array $query = array()) {
+	public function add($meth, $route, Middleware $callback = null, array $filters = array(), array $query = array()) {
 		if (!is_array($meth))
 			$meth = array($meth);
 		foreach ($meth as $methName) {
@@ -177,12 +177,14 @@ class Router extends Middleware implements \Countable{
 				$this->request->setParam(array_merge($params, $query));
 				// appel du callback si c'est possible
 				$callback = $callback ?: $this->callback;
-				if (is_callable($callback) === true) {
+				if ($callback instanceof Middleware) {
+					$callback->setNext($this->next);
+					$callback->setApplication($this->application);
 					ob_start();
-					call_user_func_array($callback, array(&$this->request, &$response));
+					$callback->call($response);
 					$response->setBody(ob_get_clean());
-				}
-				$this->next->call($response);
+				} else
+					$this->next->call($response);
 				break;
 			}
 			// aucun match dans les
