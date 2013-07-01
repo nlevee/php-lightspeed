@@ -55,9 +55,9 @@ abstract class Action implements \ArrayAccess {
 	public function __construct($ident = null) {
 		if (!$this->_nameAttribute)
 			throw new UnexpectedValueException("Property '_nameAttribute' must be define");
-		$this->{$this->_idAttribute} = $ident ? : $this->{$this->_idAttribute};
 		if (!$this->_idAttribute)
 			throw new UnexpectedValueException("Property '_idAttribute' must be define");
+		$this->{$this->_idAttribute} = $ident ? : $this->{$this->_idAttribute};
 		if (null === $ident && !empty($this->{$this->_idAttribute}))
 			$this->_dataLoaded = true;
 		$this->_reflectionClass = new \ReflectionClass($this);
