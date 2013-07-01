@@ -84,11 +84,21 @@ class Auth extends Middleware {
 		// premier check du timestamp si demandé
 		if ($this->_stampCheck !== false) {
 			list($param_name, $ttl) = $this->_stampCheck;
-			if (!isset($aFullParams[$param_name]) || $aFullParams[$param_name] < gmmktime() - $ttl)
+			if ((int) $this->request->getParam($param_name, 0) < gmmktime() - $ttl)
 				return $this->_failed($response);
+			if (!isset($aFullParams[$param_name]))
+				$aFullParams[$param_name] = $this->request->getParam($param_name, 0);
 		}
-		// comparaison des données avec la clé
-		$sSecretKey = $this->_passHandler->getSecretKey($this->request->getHeaders($this->_headerClientKey));
+		try {
+			// comparaison des données avec la clé
+			$sSecretKey = $this->_passHandler->getSecretKey($this->request->getHeaders($this->_headerClientKey));
+			$sHashServer = $this->_signMethod->sign(http_build_query($aFullParams), $sSecretKey);
+			if (!$sHashServer || $sHashServer !== $this->request->getHeaders($this->_headerSign))
+				return $this->_failed($response);
+		} catch(\Exception $e) {
+			$response->setStatus(500);
+			return $this->stop($response);
+		}
 		$this->next($response);
 	}
 

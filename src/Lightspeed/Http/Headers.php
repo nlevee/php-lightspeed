@@ -26,7 +26,7 @@ class Headers implements \ArrayAccess,\IteratorAggregate,\Countable {
 	public function __construct(array $aLoadData = array()) {
 		// nettoyage des clé
 		foreach($aLoadData as $key => $value){
-			if (($new_key = preg_replace("@^(HTTP|X)(_|-)@", '', $key)) != $key) {
+			if (($new_key = preg_replace("@^(HTTP)_@", '', $key)) != $key) {
 				$this->headers[$this->normalizeKey($new_key)] = $value;
 			}
 		}
@@ -38,7 +38,7 @@ class Headers implements \ArrayAccess,\IteratorAggregate,\Countable {
 	 * @return string
 	 */
 	protected function normalizeKey($keyname) {
-		return str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $keyname))));
+		return str_replace(' ', '-', ucwords(strtolower(preg_replace('@_|-@', ' ', $keyname))));
 	}
 
 	/**
