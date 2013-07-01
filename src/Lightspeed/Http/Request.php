@@ -47,6 +47,11 @@ class Request {
 	protected $params;
 
 	/**
+	 * @var ParamsAccess
+	 */
+	protected $input_params;
+
+	/**
 	 * @var string
 	 */
 	protected $input;
@@ -59,17 +64,18 @@ class Request {
 		$this->basepath = $basepath ?: getenv('LIGHTSPEED_BASEPATH') ?: null;
 		$this->headers = new Headers($_SERVER);
 		//Input stream (readable one time only; not available for mutipart/form-data requests)
-		$aInputData = array();
 		if (($rawInput = @file_get_contents('php://input'))) {
 			if ($this->getContentType("json")) {
-				$aInputData = @json_decode($rawInput);
+				$this->input_params = new ParamsAccess(@json_decode($rawInput));
 			} else {
-				parse_str($rawInput, $aInputData);
+				parse_str($rawInput, $aDataInput);
+				$this->input_params = new ParamsAccess($aDataInput);
+				unset($aDataInput);
 			}
 		}
 		// lecture des params
 		$this->input = $rawInput;
-		$this->params = new ParamsAccess(array_merge($_REQUEST, $aInputData));
+		$this->params = new ParamsAccess($_GET);
 	}
 
 
@@ -88,6 +94,26 @@ class Request {
 	 */
 	public function getRowInput() {
 		return $this->input;
+	}
+
+	/**
+	 * Récuperation du param $name dans le body (input),
+	 * si $name est un tableau on récupere les param des valeur de $name
+	 * @param string|array $name
+	 * @param null $default
+	 * @return array|null|string
+	 */
+	public function getInputParam($name, $default = null) {
+		return $this->input_params->getParam($name, $default);
+	}
+
+	/**
+	 * Renvoi le tableau complet de properties du body (input) en excluant les clé issue d'$excludeKeys
+	 * @param array $excludeKeys
+	 * @return array
+	 */
+	public function getInputParams(array $excludeKeys = array()) {
+		return $this->input_params->getParams($excludeKeys);
 	}
 
 	/**
@@ -112,7 +138,7 @@ class Request {
 	}
 
 	/**
-	 * Renvoi le tableau complet de properties en excluant les clé issue d'$excludeKeys
+	 * Renvoi le tableau complet de properties de la query en excluant les clé issue d'$excludeKeys
 	 * @param array $excludeKeys
 	 * @return array
 	 */

@@ -213,7 +213,7 @@ abstract class Action implements \ArrayAccess {
 	 * @param array $aExclude
 	 */
 	public function loadFromRequest(Request $oRequest, array $aPostField, array $aBind = array(), array $aExclude = array()) {
-		$aPostFullData = $oRequest->getParams($aExclude);
+		$aPostFullData = $oRequest->getInputParams($aExclude);
 		$this->loadFromArray($aPostFullData, $aPostField, $aBind);
 	}
 
