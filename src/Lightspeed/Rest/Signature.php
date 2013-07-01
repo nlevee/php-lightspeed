@@ -11,8 +11,9 @@ interface Signature {
 
 	/**
 	 * @param string $value_to_sign
+	 * @param string $pass_phrase
 	 * @return mixed|string
 	 */
-	public function sign($value_to_sign);
+	public function sign($value_to_sign, $pass_phrase = null);
 
 }
