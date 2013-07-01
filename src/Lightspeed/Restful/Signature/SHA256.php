@@ -4,14 +4,14 @@
  * @version 120620131126
  */
 
-namespace Lightspeed\Rest\Signature;
+namespace Lightspeed\Restful\Signature;
 
 use Lightspeed\InvalidArgumentException;
-use Lightspeed\Rest\Signature;
+use Lightspeed\Restful\Signature;
 
 /**
  * Class SHA256
- * @package Lightspeed\Rest\Signature
+ * @package Lightspeed\Restful\Signature
  */
 class SHA256 implements Signature {
 

@@ -4,14 +4,14 @@
  * @version 120620131128
  */
 
-namespace Lightspeed\Rest;
+namespace Lightspeed\Restful;
 
 use Lightspeed\Http\Headers;
 use Lightspeed\ParamsAccess;
 
 /**
  * Class Request
- * @package Lightspeed\Rest
+ * @package Lightspeed\Restful
  */
 class Request {
 
@@ -75,7 +75,7 @@ class Request {
 	}
 
 	/**
-	 * Ajoute des header spécifique a la signature du requete Rest :
+	 * Ajoute des header spécifique a la signature du requete Restful :
 	 * X-AuthClient, X-AuthPass, X-AuthMethod
 	 * @param string $client_public_key
 	 * @param Signature $signature

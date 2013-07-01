@@ -4,7 +4,7 @@
  * @version 120620131126
  */
 
-namespace Lightspeed\Rest;
+namespace Lightspeed\Restful;
 
 
 interface Signature {

@@ -4,12 +4,12 @@
  * @version 010720131638
  */
 
-namespace Lightspeed\Rest;
+namespace Lightspeed\Restful;
 
 
 /**
  * Class SecretHandler
- * @package Lightspeed\Rest
+ * @package Lightspeed\Restful
  */
 interface SecretHandler {
 
