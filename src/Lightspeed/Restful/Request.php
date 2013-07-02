@@ -84,7 +84,6 @@ class Request {
 		$value = $this->method . ':' . $this->uri . "?" . $this->params->getParams();
 		$this->headers['X-AuthClient'] = $client_public_key;
 		$this->headers['X-AuthPass'] = $signature->sign($value);
-		$this->headers['X-AuthMethod'] = get_class($signature);
 	}
 
 	/**
