@@ -89,16 +89,14 @@ class Auth extends Middleware {
 			if (!isset($aFullParams[$param_name]))
 				$aFullParams[$param_name] = $this->request->getParam($param_name, 0);
 		}
-		try {
-			// comparaison des données avec la clé
-			$sSecretKey = $this->_passHandler->getSecretKey($this->request->getHeaders($this->_headerClientKey));
+		// comparaison des données avec la clé
+		$sSecretKey = $this->_passHandler->getSecretKey($this->request->getHeaders($this->_headerClientKey));
+		if ($sSecretKey) {
 			$sHashServer = $this->_signMethod->sign(http_build_query($aFullParams), $sSecretKey);
 			if (!$sHashServer || $sHashServer !== $this->request->getHeaders($this->_headerSign))
 				return $this->_failed($response);
-		} catch(\Exception $e) {
-			$response->setStatus(500);
-			return $this->stop($response);
-		}
+		} else
+			return $this->_failed($response);
 		$this->next($response);
 	}
 

@@ -100,7 +100,13 @@ class App {
 	public function listen(Response &$response = null) {
 		// demarrage des middlewares
 		$response = $response ?: new Response();
-		$this->middlewares[0]->call($response);
+		try {
+			$this->middlewares[0]->call($response);
+		} catch(\Exception $e) {
+			$response->setBody((string) $e);
+			$response->setStatus(500);
+			$response->flush($this->request);
+		}
 	}
 
 	/**
