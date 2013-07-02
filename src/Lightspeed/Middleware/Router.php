@@ -180,9 +180,7 @@ class Router extends Middleware implements \Countable{
 				if ($callback instanceof Middleware) {
 					$callback->setNext($this->next);
 					$callback->setApplication($this->application);
-					ob_start();
 					$callback->call($response);
-					$response->setBody(ob_get_clean());
 				} else
 					$this->next($response);
 				break;
