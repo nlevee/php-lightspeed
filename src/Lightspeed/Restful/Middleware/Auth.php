@@ -90,12 +90,12 @@ class Auth extends Middleware {
 	 * @return mixed
 	 */
 	public function call(Response &$response) {
-		$response->headers["X-AuthVerified"] = false;
 		// on récupere les données de requetes
 		if ($this->request->getMethod() == 'GET')
 			$aFullParams = $this->request->getParams();
 		else
 			$aFullParams = $this->request->getInputParams();
+		$this->request->setParam('auth_verified', 'no');
 		// premier check du timestamp si demandé
 		if ($this->_stampCheck !== false) {
 			list($param_name, $ttl) = $this->_stampCheck;
@@ -110,7 +110,7 @@ class Auth extends Middleware {
 			$sHashServer = $this->_signMethod->sign(http_build_query($aFullParams), $sSecretKey);
 			if (!$sHashServer || $sHashServer !== $this->request->getHeaders($this->_headerSign))
 				return $this->_failed($response);
-			$response->headers["X-AuthVerified"] = true;
+			$this->request->setParam('auth_verified', 'ok');
 		} else
 			return $this->_failed($response);
 		$this->next($response);

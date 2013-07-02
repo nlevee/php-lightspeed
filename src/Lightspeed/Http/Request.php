@@ -72,7 +72,8 @@ class Request {
 				$this->input_params = new ParamsAccess($aDataInput);
 				unset($aDataInput);
 			}
-		}
+		}else
+			$this->input_params = new ParamsAccess();
 		// lecture des params
 		$this->input = $rawInput;
 		$this->params = new ParamsAccess($_GET);

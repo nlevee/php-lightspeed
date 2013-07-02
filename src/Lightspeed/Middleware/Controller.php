@@ -84,6 +84,6 @@ class Controller extends Middleware {
 			self::$PARAM_CONTROLLER => $this->default_controller
 		)));
 		$response->setBody($this->launch($controller, $action, array($response)));
-		$this->next->call($response);
+		$this->next($response);
 	}
 }

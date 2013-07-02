@@ -214,7 +214,7 @@ class Response {
 		// formatage du body selon le request content
 		foreach ($this->formater as $object) {
 			if ($req->getAccept($object[0])) {
-				$sConvertBody = $object[1]->convert($this->body, $req);
+				$sConvertBody = trim($object[1]->convert($this->body, $req));
 				$this->setContentType($object[1]->getContentType());
 				break;
 			}
@@ -241,9 +241,9 @@ class Response {
 				header($sHeaderKey . ": " . $sHeaderValue, false);
 		} else
 			trigger_error('Header already sent!', E_USER_NOTICE);
-		if (isset($sConvertBody))
+		if (isset($sConvertBody)) {
 			echo $sConvertBody;
-		else trigger_error("Any filter for format response", E_USER_WARNING);
+		}else trigger_error("Any filter for format response", E_USER_WARNING);
 	}
 
 	/**
