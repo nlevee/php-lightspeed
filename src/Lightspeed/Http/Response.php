@@ -69,6 +69,13 @@ class Response {
 
 
 	/**
+	 * @var Headers
+	 */
+	public $headers;
+
+
+	/**
+	/**
 	 * @var int|bool|null
 	 */
 	protected $ttl = null;
@@ -82,11 +89,6 @@ class Response {
 	 * @var int
 	 */
 	protected $statusCode = 200;
-
-	/**
-	 * @var Headers
-	 */
-	protected $headers;
 
 	/**
 	 * @var Formater[]

@@ -43,6 +43,11 @@ class Auth extends Middleware {
 	 */
 	private $_stampCheck = false;
 
+	/**
+	 * @var bool
+	 */
+	private $_required = true;
+
 
 	/**
 	 * @param string $sHeaderClientKey
@@ -55,6 +60,15 @@ class Auth extends Middleware {
 		$this->_headerSign = $sHeaderSignature;
 		$this->_signMethod = $oSignMethod;
 		$this->_passHandler = $handler;
+	}
+
+	/**
+	 * Permet de mettre optionnel ou pas l'authentification
+	 * par default c'est obligatoire
+	 * @param bool $bool
+	 */
+	public function required($bool) {
+		$this->_required = (bool) $bool;
 	}
 
 	/**
@@ -76,6 +90,7 @@ class Auth extends Middleware {
 	 * @return mixed
 	 */
 	public function call(Response &$response) {
+		$response->headers["X-AuthVerified"] = false;
 		// on récupere les données de requetes
 		if ($this->request->getMethod() == 'GET')
 			$aFullParams = $this->request->getParams();
@@ -95,6 +110,7 @@ class Auth extends Middleware {
 			$sHashServer = $this->_signMethod->sign(http_build_query($aFullParams), $sSecretKey);
 			if (!$sHashServer || $sHashServer !== $this->request->getHeaders($this->_headerSign))
 				return $this->_failed($response);
+			$response->headers["X-AuthVerified"] = true;
 		} else
 			return $this->_failed($response);
 		$this->next($response);
@@ -106,7 +122,10 @@ class Auth extends Middleware {
 	 * @param Response $response
 	 */
 	private function _failed(Response &$response) {
-		$response->setStatus(401);
-		$this->stop($response);
+		if ($this->_required === true) {
+			$response->setStatus(401);
+			$this->stop($response);
+		} else
+			$this->next($response);
 	}
 }

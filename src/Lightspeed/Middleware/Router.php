@@ -184,7 +184,7 @@ class Router extends Middleware implements \Countable{
 					$callback->call($response);
 					$response->setBody(ob_get_clean());
 				} else
-					$this->next->call($response);
+					$this->next($response);
 				break;
 			}
 			// aucun match dans les
