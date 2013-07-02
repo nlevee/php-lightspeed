@@ -95,7 +95,7 @@ class Auth extends Middleware {
 			$aFullParams = $this->request->getParams();
 		else
 			$aFullParams = $this->request->getInputParams();
-		$this->request->setParam('auth_verified', 'no');
+		$this->request->setParam('auth_verified', false);
 		// premier check du timestamp si demandé
 		if ($this->_stampCheck !== false) {
 			list($param_name, $ttl) = $this->_stampCheck;
@@ -110,7 +110,7 @@ class Auth extends Middleware {
 			$sHashServer = $this->_signMethod->sign(http_build_query($aFullParams), $sSecretKey);
 			if (!$sHashServer || $sHashServer !== $this->request->getHeaders($this->_headerSign))
 				return $this->_failed($response);
-			$this->request->setParam('auth_verified', 'ok');
+			$this->request->setParam('auth_verified', true);
 		} else
 			return $this->_failed($response);
 		$this->next($response);
