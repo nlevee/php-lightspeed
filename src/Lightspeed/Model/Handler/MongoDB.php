@@ -132,7 +132,10 @@ class MongoDB extends Handler\Action {
 	 * @return Action[]
 	 */
 	public function fetchSetInto(Action $oModelObject, $limit = -1, $offset = 0, array $aExcludeFields = array()) {
-		$oCollection = $this->getCollection($oModelObject)->find()->skip($offset);
+		if (!empty($aExcludeFields)) {
+			$aExcludeFields = array_combine($aExcludeFields, array_fill(0, count($aExcludeFields), 0));
+		}
+		$oCollection = $this->getCollection($oModelObject)->find(array(), $aExcludeFields)->skip($offset);
 		if ($limit > 0)
 			$oCollection = $oCollection->limit($limit);
 		return array_map(function($item) use ($oModelObject){
