@@ -118,7 +118,7 @@ class MongoDB extends Handler\Action {
 		foreach($oModelObject->getIdAttribute(true) as $sFieldName)
 			$where[$sFieldName] = $oModelObject[$sFieldName];
 		$where = array_filter($where);
-		if (empty($where) || !($dataset = $this->getCollection($oModelObject)->findOne($where)))
+		if (empty($where) || !$this->getCollection($oModelObject)->findOne($where))
 			return false;
 		return true;
 	}
