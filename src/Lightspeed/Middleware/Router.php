@@ -95,7 +95,7 @@ class Router extends Middleware implements \Countable{
 	 * @param array $filters
 	 * @param array $query
 	 */
-	public function add($meth, $route, Middleware $callback = null, array $filters = array(), array $query = array()) {
+	public function add($meth, $route, $callback = null, array $filters = array(), array $query = array()) {
 		if (!is_array($meth))
 			$meth = array($meth);
 		foreach ($meth as $methName) {
@@ -178,11 +178,12 @@ class Router extends Middleware implements \Countable{
 				// appel du callback si c'est possible
 				$callback = $callback ?: $this->callback;
 				if ($callback instanceof Middleware) {
-					$callback->setNext($this->next);
 					$callback->setApplication($this->application);
-					$callback->call($response);
-				} else
-					$this->next($response);
+					$callback->setNext($this->next);
+					$this->setNext($callback);
+				}
+				// appel du suivant
+				$this->next($response);
 				break;
 			}
 			// aucun match dans les
@@ -191,7 +192,7 @@ class Router extends Middleware implements \Countable{
 				$this->stop($response);
 			}
 			unset($oRoute);
-		}else{
+		} else {
 			$response->notFound($this->getMatchMethods());
 			$this->stop($response);
 		}

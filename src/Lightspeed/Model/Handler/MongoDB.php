@@ -46,14 +46,18 @@ class MongoDB extends Handler\Action {
 	/**
 	 * Charge les données du model dans l'objet Model
 	 * @param Action $oModelObject
+	 * @param array $aExcludeFields
 	 * @return bool
 	 */
-	public function fetchInto(Action &$oModelObject) {
+	public function fetchInto(Action &$oModelObject, array $aExcludeFields = array()) {
 		$where = array();
 		foreach($oModelObject->getIdAttribute(true) as $sFieldName)
 			$where[$sFieldName] = $oModelObject[$sFieldName];
 		$where = array_filter($where);
-		if (empty($where) || !($dataset = $this->getCollection($oModelObject)->findOne($where)))
+		if (!empty($aExcludeFields)) {
+			$aExcludeFields = array_combine($aExcludeFields, array_fill(0, count($aExcludeFields), 0));
+		}
+		if (empty($where) || !($dataset = $this->getCollection($oModelObject)->findOne($where, $aExcludeFields)))
 			return false;
 		$oModelObject->loadFromArray($dataset);
 		return true;
@@ -66,8 +70,17 @@ class MongoDB extends Handler\Action {
 	 * @return bool
 	 */
 	public function saveFrom(Action &$oModelObject) {
+		$where = array();
+		foreach($oModelObject->getIdAttribute(true) as $sFieldName)
+			$where[$sFieldName] = $oModelObject[$sFieldName];
+		$where = array_filter($where);
 		$aDataToInsert = array_filter($oModelObject->getArrayCopy());
-		$bResult = $this->getCollection($oModelObject)->save($aDataToInsert);
+		if (!empty($where)) {
+			$bResult = $this->getCollection($oModelObject)->update($where, array(
+				'$set' => array_diff_key($aDataToInsert, $where)
+			), array('upsert' => true));
+		} else
+			$bResult = $this->getCollection($oModelObject)->save($aDataToInsert);
 		if (isset($bResult['ok']) && $bResult['ok'] == 1) {
 			$oModelObject->loadFromArray($aDataToInsert);
 			return true;
@@ -113,11 +126,12 @@ class MongoDB extends Handler\Action {
 	/**
 	 * On recupere une liste simple d'une partie ou de la totalité des element du systeme
 	 * @param Action $oModelObject
-	 * @param int $offset
 	 * @param int $limit
+	 * @param int $offset
+	 * @param array $aExcludeFields
 	 * @return Action[]
 	 */
-	public function fetchSetInto(Action $oModelObject, $limit = -1, $offset = 0) {
+	public function fetchSetInto(Action $oModelObject, $limit = -1, $offset = 0, array $aExcludeFields = array()) {
 		$oCollection = $this->getCollection($oModelObject)->find()->skip($offset);
 		if ($limit > 0)
 			$oCollection = $oCollection->limit($limit);

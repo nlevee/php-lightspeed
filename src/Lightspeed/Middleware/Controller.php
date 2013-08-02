@@ -48,7 +48,7 @@ class Controller extends Middleware {
 	 * @param string|null $default_action
 	 */
 	public function __construct($namespace = '', $default_controller = null, $default_action = null) {
-		$this->namespace = $namespace;
+		$this->namespace = !empty($namespace) && substr($namespace, -1) != '\\' ? $namespace . '\\' : $namespace;
 		$this->default_action = $default_action ?: $this->default_action;
 		$this->default_controller = $default_controller ?: $this->default_controller;
 	}

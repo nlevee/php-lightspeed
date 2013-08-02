@@ -29,9 +29,14 @@ class App {
 	protected $request;
 
 	/**
-	 * @var array
+	 * @var Middleware
 	 */
-	protected $middlewares = array();
+	protected $middlewares_start;
+
+	/**
+	 * @var Middleware
+	 */
+	protected $middlewares_prev;
 
 	/**
 	 * @var Share[]
@@ -49,7 +54,7 @@ class App {
 	 */
 	public function __construct(Request &$request = null) {
 		$this->request = $request ?: new Request();
-		$this->middlewares[0] = $this;
+		$this->middlewares_start = &$this;
 	}
 
 
@@ -87,10 +92,17 @@ class App {
 	 * Ajoute un middleware au lanceur
 	 * @param Middleware $middleware
 	 */
-	public function prepend(Middleware $middleware) {
+	public function append(Middleware $middleware) {
+		// au premier middleware on l'ajoute le start
+		if ($this->middlewares_start === $this)
+			$this->middlewares_start = $middleware;
+		// le suivant a lancé c'est toujours l'app courante
 		$middleware->setApplication($this);
-		$middleware->setNext($this->middlewares[0]);
-		array_unshift($this->middlewares, $middleware);
+		$middleware->setNext($this);
+		// on inject au précédent le next courant et on change le précédent pour le prochain
+		if ($this->middlewares_prev)
+			$this->middlewares_prev->setNext($middleware);
+		$this->middlewares_prev = &$middleware;
 	}
 
 	/**
@@ -101,7 +113,7 @@ class App {
 		// demarrage des middlewares
 		$response = $response ?: new Response();
 		try {
-			$this->middlewares[0]->call($response);
+			$this->middlewares_start->call($response);
 		} catch(\Exception $e) {
 			$response->setBody((string) $e);
 			$response->setStatus(500);

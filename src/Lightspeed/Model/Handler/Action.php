@@ -15,11 +15,12 @@ use Lightspeed\Model;
 abstract class Action {
 
 	/**
-	 * Charge les données du model dans l'objet Model
+	 * Charge les données du model dans l'objet Model, on ne charge pas les champs du tableau $aExcludeFields
 	 * @param Model\Action $oModelObject
+	 * @param array $aExcludeFields
 	 * @return bool
 	 */
-	abstract public function fetchInto(Model\Action &$oModelObject);
+	abstract public function fetchInto(Model\Action &$oModelObject, array $aExcludeFields = array());
 
 	/**
 	 * Sauvegarde les données d'un model du systeme de gestion,
@@ -46,11 +47,12 @@ abstract class Action {
 	/**
 	 * On recupere une liste simple d'une partie ou de la totalité des element du systeme
 	 * @param Model\Action $oModelObject
-	 * @param int $offset
 	 * @param int $limit
+	 * @param int $offset
+	 * @param array $aExcludeFields
 	 * @return Action[]
 	 */
-	abstract public function fetchSetInto(Model\Action $oModelObject, $limit = -1, $offset = 0);
+	abstract public function fetchSetInto(Model\Action $oModelObject, $limit = -1, $offset = 0, array $aExcludeFields = array());
 
 	/**
 	 * Renvoi le nombre de ligne d'une collection de row
