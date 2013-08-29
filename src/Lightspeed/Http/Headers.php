@@ -19,6 +19,19 @@ class Headers implements \ArrayAccess,\IteratorAggregate,\Countable {
 
 
 	/**
+	 * @var array
+	 */
+	protected static $special_headers = array(
+		'CONTENT_TYPE',
+		'CONTENT_LENGTH',
+		'PHP_AUTH_USER',
+		'PHP_AUTH_PW',
+		'PHP_AUTH_DIGEST',
+		'AUTH_TYPE'
+	);
+
+
+	/**
 	 * Charge les données depuis $aLoadData elimine les prefix HTTP_|- et X_|-
 	 * et stocke les clé/valeur nettoyées
 	 * @param array $aLoadData
@@ -26,7 +39,7 @@ class Headers implements \ArrayAccess,\IteratorAggregate,\Countable {
 	public function __construct(array $aLoadData = array()) {
 		// nettoyage des clé
 		foreach($aLoadData as $key => $value){
-			if (($new_key = preg_replace("@^(HTTP)_@", '', $key)) != $key) {
+			if (($new_key = preg_replace("@^(HTTP|X)_@", '', $key)) != $key || in_array($key, self::$special_headers)) {
 				$this->headers[$this->normalizeKey($new_key)] = $value;
 			}
 		}

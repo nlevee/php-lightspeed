@@ -13,7 +13,7 @@ use Lightspeed\Http\Request;
  * Class Json
  * @package Lightspeed\Formater
  */
-class Json implements Formater {
+class Json implements FormaterInterface {
 
 	/**
 	 * Renvoi le content-type a renvoyé au client dans le header, peut être null

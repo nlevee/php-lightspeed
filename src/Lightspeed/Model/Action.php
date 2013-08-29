@@ -33,9 +33,7 @@ abstract class Action implements \ArrayAccess {
 	/**
 	 * @var array tableau des properties ignoré
 	 */
-	protected $_ignoreProperties = array(
-		'_idAttribute', '_nameAttribute'
-	);
+	protected $_ignoreProperties = array();
 
 	/**
 	 * @var string|array
@@ -57,10 +55,15 @@ abstract class Action implements \ArrayAccess {
 			throw new UnexpectedValueException("Property '_nameAttribute' must be define");
 		if (!$this->_idAttribute)
 			throw new UnexpectedValueException("Property '_idAttribute' must be define");
-		$this->{$this->_idAttribute} = $ident ? : $this->{$this->_idAttribute};
-		if (null === $ident && !empty($this->{$this->_idAttribute}))
-			$this->_dataLoaded = true;
 		$this->_reflectionClass = new \ReflectionClass($this);
+		if ($ident !== null) {
+			$aListId = $this->getIdAttribute(true);
+			if (!is_array($ident) && count($aListId) == 1)
+				$ident = array($aListId[0] => $ident);
+			foreach($aListId as $sFieldName)
+				if (isset($ident[$sFieldName]))
+					$this->__set($sFieldName, $ident[$sFieldName]);
+		}
 	}
 
 	/**
@@ -182,8 +185,9 @@ abstract class Action implements \ArrayAccess {
 	 */
 	public function getAccessProperties() {
 		$aProperties = $this->_reflectionClass->getProperties(\ReflectionProperty::IS_PROTECTED);
-		$aIgnore = $this->_ignoreProperties;
-		$aIgnore[] = '_ignoreProperties';
+		$aIgnore = array_merge($this->_ignoreProperties, array(
+			'_idAttribute', '_nameAttribute', '_ignoreProperties'
+		));
 		return array_filter(array_map(function($item) {
 			return $item->getName();
 		}, $aProperties), function($item) use ($aIgnore) {
@@ -223,7 +227,7 @@ abstract class Action implements \ArrayAccess {
 	 * Si la clé de $aArrayData est une chaine on prend sa valeur a la place de la valeur du champs
 	 * Le tableau $aBind fait correspondre la clé de request au champs dans la base si
 	 * non rempli on utilise la clé dans $aArrayData
-	 * Si $aPostField est vide on suppose que c'est les données sont dans $aArrayData
+	 * Si $aPostField est vide on suppose que les données sont dans $aArrayData
 	 * @param array $aArrayData
 	 * @param array $aPostField
 	 * @param array $aBind

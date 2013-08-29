@@ -90,18 +90,12 @@ class Response {
 	 */
 	protected $statusCode = 200;
 
-	/**
-	 * @var Formater[]
-	 */
-	protected $formater = array();
-
 
 	/**
 	 *
 	 */
 	public function __construct() {
 		$this->headers = new Headers();
-		$this->addFormater("text", new Formater\String());
 	}
 
 
@@ -166,15 +160,6 @@ class Response {
 	}
 
 	/**
-	 * On ajoute un formater au début de la pile
-	 * @param string $type
-	 * @param Formater $formater
-	 */
-	public function addFormater($type, Formater $formater) {
-		array_unshift($this->formater, array($type, $formater));
-	}
-
-	/**
 	 * Met a jour le code de status de la réponse
 	 * @param int $statusCode
 	 */
@@ -188,6 +173,14 @@ class Response {
 	 */
 	public function getStatus() {
 		return $this->statusCode;
+	}
+
+	/**
+	 * Renvoi chaque partie du body
+	 * @return array
+	 */
+	public function getBody() {
+		return $this->body;
 	}
 
 	/**
@@ -211,14 +204,9 @@ class Response {
 	 * @param Request $req
 	 */
 	public function flush(Request $req) {
-		// formatage du body selon le request content
-		foreach ($this->formater as $object) {
-			if ($req->getAccept($object[0])) {
-				$sConvertBody = trim($object[1]->convert($this->body, $req));
-				$this->setContentType($object[1]->getContentType());
-				break;
-			}
-		}
+		$sConvertBody = '';
+		foreach($this->getBody() as $sBodyPart)
+			$sConvertBody .= (string) $sBodyPart;
 		if (!headers_sent()) {
 			// prise en charge du contenu vide
 			if (empty($sConvertBody) && ob_get_length() == 0 && $this->statusCode == 200)

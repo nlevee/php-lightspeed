@@ -72,9 +72,7 @@ class ParamsAccess implements \ArrayAccess,\Countable {
 	 * @return array
 	 */
 	public function getParams(array $excludeKeys = array()) {
-		return array_filter($this->params, function($value) use ($excludeKeys){
-			return !in_array($value, $excludeKeys);
-		});
+		return array_diff_key( $this->params, array_flip( $excludeKeys ) );
 	}
 
 	/**

@@ -66,14 +66,15 @@ class Request {
 		//Input stream (readable one time only; not available for mutipart/form-data requests)
 		if (($rawInput = @file_get_contents('php://input'))) {
 			if ($this->getContentType("json")) {
-				$this->input_params = new ParamsAccess(@json_decode($rawInput));
+				$this->input_params = new ParamsAccess(@json_decode($rawInput, true) ?: array());
 			} else {
 				parse_str($rawInput, $aDataInput);
-				$this->input_params = new ParamsAccess($aDataInput);
+				if (is_array($aDataInput))
+					$this->input_params = new ParamsAccess($aDataInput);
 				unset($aDataInput);
 			}
 		}else
-			$this->input_params = new ParamsAccess();
+			$this->input_params = new ParamsAccess($_POST);
 		// lecture des params
 		$this->input = $rawInput;
 		$this->params = new ParamsAccess($_GET);
@@ -115,6 +116,16 @@ class Request {
 	 */
 	public function getInputParams(array $excludeKeys = array()) {
 		return $this->input_params->getParams($excludeKeys);
+	}
+
+	/**
+	 * Ajoute un ou plusieurs input_params a la request,
+	 * si $name est un tableau il est ajouter sous forme clé=>valeur
+	 * @param string|array $name
+	 * @param null|string $value
+	 */
+	public function setInputParams($name, $value = null) {
+		$this->input_params->setParam($name, $value);
 	}
 
 	/**
@@ -205,11 +216,11 @@ class Request {
 		if ($callbackTest !== null && is_callable($callbackTest))
 			$this->contentTypeCallback[$sType] = $callbackTest;
 		else {
-			$sContentType = $this->getHeaders('content-type');
+			$sContentType = $this->getHeaders('Content-Type');
 			if (isset($this->contentTypeCallback[$sType]))
 				return call_user_func($this->contentTypeCallback[$sType], $sContentType);
 			else
-				return 1 === preg_match('@(' . $sType . ';)@', $sContentType);
+				return 1 === preg_match('@(' . $sType . ')@', $sContentType);
 		}
 		return false;
 	}

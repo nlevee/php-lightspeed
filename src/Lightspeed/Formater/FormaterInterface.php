@@ -4,7 +4,7 @@
  * @version 140620131730
  */
 
-namespace Lightspeed;
+namespace Lightspeed\Formater;
 
 use Lightspeed\Http\Request;
 
@@ -12,7 +12,7 @@ use Lightspeed\Http\Request;
  * Class Formater
  * @package Lightspeed
  */
-interface Formater {
+interface FormaterInterface {
 
 	/**
 	 * Renvoi le content-type a renvoyé au client dans le header, peut être null
@@ -23,7 +23,7 @@ interface Formater {
 	/**
 	 * Converti la valeur $content en string dans le format nommé
 	 * @param mixed $content
-	 * @param Http\Request $request
+	 * @param \Lightspeed\Http\Request $request
 	 * @return string
 	 */
 	public function convert($content, Request $request);

@@ -31,8 +31,11 @@ class Collection extends \ArrayIterator {
 	/**
 	 * Ajoute un model a la collection
 	 * @param Action $value
+	 * @throws \Lightspeed\InvalidArgumentException
 	 */
-	public function append(Action $value) {
+	public function append($value) {
+		if (!is_object($value) || !is_subclass_of($value, '\\Lightspeed\\Model\\Action'))
+			throw new InvalidArgumentException("value must be a \\Lightspeed\\Model\\Action");
 		parent::append($value);
 	}
 

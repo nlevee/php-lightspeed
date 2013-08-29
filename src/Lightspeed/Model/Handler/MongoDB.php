@@ -74,7 +74,7 @@ class MongoDB extends Handler\Action {
 		foreach($oModelObject->getIdAttribute(true) as $sFieldName)
 			$where[$sFieldName] = $oModelObject[$sFieldName];
 		$where = array_filter($where);
-		$aDataToInsert = array_filter($oModelObject->getArrayCopy());
+		$aDataToInsert = array_filter($oModelObject->getArrayCopy(), function($value){ return !is_null($value); });
 		if (!empty($where)) {
 			$bResult = $this->getCollection($oModelObject)->update($where, array(
 				'$set' => array_diff_key($aDataToInsert, $where)
@@ -138,6 +138,16 @@ class MongoDB extends Handler\Action {
 		$oCollection = $this->getCollection($oModelObject)->find(array(), $aExcludeFields)->skip($offset);
 		if ($limit > 0)
 			$oCollection = $oCollection->limit($limit);
+		return $this->convertIteratorInto($oCollection, $oModelObject);
+	}
+
+	/**
+	 * Convertit un tableau de résultat en tableau de model
+	 * @param \Iterator $oCollection
+	 * @param Action $oModelObject
+	 * @return Action[]
+	 */
+	public function convertIteratorInto(\Iterator $oCollection, Action $oModelObject) {
 		return array_map(function($item) use ($oModelObject){
 			$oNewModel = clone $oModelObject;
 			$oNewModel->loadFromArray($item);

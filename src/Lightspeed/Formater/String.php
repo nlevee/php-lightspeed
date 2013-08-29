@@ -11,7 +11,7 @@ use Lightspeed\Formater;
 use Lightspeed\Http;
 use Lightspeed\Http\Request;
 
-class String implements Formater {
+class String implements FormaterInterface {
 
 	/**
 	 * Renvoi le content-type a renvoyé au client dans le header, peut être null
