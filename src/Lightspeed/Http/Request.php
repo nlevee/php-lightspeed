@@ -58,10 +58,9 @@ class Request {
 
 
 	/**
-	 * @param null|string $basepath
+	 *
 	 */
-	public function __construct($basepath = null) {
-		$this->basepath = $basepath ?: getenv('LIGHTSPEED_BASEPATH') ?: null;
+	public function __construct() {
 		$this->headers = new Headers($_SERVER);
 		//Input stream (readable one time only; not available for mutipart/form-data requests)
 		if (($rawInput = @file_get_contents('php://input'))) {
@@ -180,9 +179,7 @@ class Request {
 	 */
 	public function getUri() {
 		list($path, ) = explode('?', $_SERVER['REQUEST_URI']);
-		if (null !== $this->basepath)
-			return '/' . preg_replace('@^'.$this->basepath.'@', '', $path);
-		return $path;
+		return str_replace('//', '/', $path . '/');
 	}
 
 	/**

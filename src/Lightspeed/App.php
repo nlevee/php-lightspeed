@@ -43,15 +43,49 @@ class App {
 	 */
 	protected $shared_service = array();
 
+	/**
+	 * @var string
+	 */
+	protected $basepath;
+
 
 	/**
-	 * @param Request $request
+	 * $opts = array(
+	 * 		request_handler => Http\Request,
+	 * 		basepath => string : /
+	 * )
+	 * @param array $opts
 	 */
-	public function __construct(Request &$request = null) {
-		$this->request = $request ?: new Request();
+	public function __construct(array $opts = array()) {
+		$request_handler = $basepath = null;
+		extract($opts);
+		$this->request = is_a($request_handler, '\\Lightspeed\\Http\\Request') ? $request_handler : new Request();
+		$this->basepath = is_string($basepath) ? $basepath : (getenv('LIGHTSPEED_BASEPATH') ?: null);
 		$this->middlewares_start = &$this;
 	}
 
+	/**
+	 * @param string $basepath
+	 */
+	public function setBaseUriPath($basepath) {
+		$this->basepath = $basepath;
+	}
+
+	/**
+	 * Renvoi le basepath uri de la requete
+	 * @return string
+	 */
+	public function getBaseUriPath() {
+		return $this->basepath;
+	}
+
+	/**
+	 * Renvoi l'url réel de l'application
+	 * @return string
+	 */
+	public function getUri() {
+		return $this->getRequestHandler()->getUri();
+	}
 
 	/**
 	 * Renvoi l'instance request utilisé dans le dispatcher

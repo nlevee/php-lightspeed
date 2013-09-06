@@ -16,11 +16,12 @@ class Factory {
 	 * si $sCurrentEnv on merge les donnée de la clé default et $sCurrentEnv directement
 	 * @param string $sFileName
 	 * @param null|string $sCurrentEnv
+	 * @param string $sBaseConfigSection
 	 * @throws \Lightspeed\DomainException
 	 * @throws \Lightspeed\UnexpectedValueException
 	 * @return Item
 	 */
-	public static function ReadFile($sFileName, $sCurrentEnv = null) {
+	public static function ReadFile($sFileName, $sCurrentEnv = null, $sBaseConfigSection = 'default') {
 		// verification du fichier de config
 		if (!is_file($sFileName) && is_readable($sFileName))
 			throw new DomainException("File '$sFileName' doesn't exist or isn't readable");
@@ -41,10 +42,10 @@ class Factory {
 		// tentative de merge avec l'env courant
 		if (!empty($sCurrentEnv)) {
 			try {
-				$oConf = $oConf->mergeOffset('default', $sCurrentEnv);
+				$oConf = $oConf->mergeOffset($sBaseConfigSection, $sCurrentEnv);
 			} catch (\Exception $e) { }
-			$oConf = $oConf['default'];
 		}
+		$oConf = $oConf[$sBaseConfigSection];
 		// renvoi des données
 		return $oConf;
 	}

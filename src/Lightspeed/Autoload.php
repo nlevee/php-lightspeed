@@ -32,7 +32,7 @@ class Autoload {
 		// mise en forme du nom de classe
 		$sClassName = preg_replace('@_|/+@', DIRECTORY_SEPARATOR, strtr($sClassName, '\\', DIRECTORY_SEPARATOR));
 		if (!empty($sClassName)) {
-			if (preg_match("@Exception$@", $sClassName)) {
+			if (preg_match("@^Lightspeed[^\\\]+\\\Exception$@", $sClassName)) {
 				$aPartClass = explode("/", $sClassName);
 				array_pop($aPartClass);
 				array_push($aPartClass, "Exception");

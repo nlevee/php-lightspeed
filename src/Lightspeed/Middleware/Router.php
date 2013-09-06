@@ -107,6 +107,17 @@ class Router extends Middleware implements \Countable{
 	}
 
 	/**
+	 * Renvoi l'url a parsé pour le routage
+	 * @return mixed|string
+	 */
+	public function getRewriteUri() {
+		$basepath = $this->application->getBaseUriPath();
+		if (!empty($basepath))
+			return "/" . preg_replace("@".$basepath."@i", '', $this->application->getUri());
+		return $this->application->getUri();
+	}
+
+	/**
 	 * Purge les route entré pour la methode $meth ou toute les routes si
 	 * $meth est empty si $meth est un tableau de method on purge les route de chaque methode
 	 * @param null|string|array $meth peut être GET, POST, ... ou 'ANY' pour n'importe laquel
@@ -129,7 +140,7 @@ class Router extends Middleware implements \Countable{
 	 */
 	public function getMatchMethods() {
 		$aMethodList = array();
-		$sRequestUri = $this->request->getUri();
+		$sRequestUri = $this->getRewriteUri();
 		foreach($this->routes as $sMethodName => $aRouteList) {
 			if (empty($aRouteList))
 				continue;
@@ -166,7 +177,7 @@ class Router extends Middleware implements \Countable{
 		if (isset($this->routes[$method]))
 			$aApplyRoute = array_merge($this->routes[$method], $aApplyRoute);
 		if (!empty($aApplyRoute)) {
-			$sRequestUri = $this->request->getUri();
+			$sRequestUri = $this->getRewriteUri();
 			foreach ($aApplyRoute as $route) {
 				// récuperation des params de la route et creation de l'objet pour test
 				list($pattern_uri, $callback, $filters, $query) = $route;
